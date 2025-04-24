@@ -53,8 +53,8 @@ const MarkdownRenderer = ({ content, isDark }) => {
             <code 
               className={`${className} px-1 py-0.5 ${
                 isDark 
-                  ? 'bg-gray-700 text-orange-400' 
-                  : 'bg-gray-100 text-orange-600'
+                  ? 'bg-gray-700 text-cyan-400' 
+                  : 'bg-gray-100 text-cyan-600'
               } rounded`} 
               {...props}
             >
@@ -108,7 +108,7 @@ const MarkdownRenderer = ({ content, isDark }) => {
         ),
         a: ({ node, ...props }) => (
           <a 
-            className={`${isDark ? 'text-orange-400' : 'text-orange-600'} hover:underline`} 
+            className={`${isDark ? 'text-cyan-400' : 'text-cyan-600'} hover:underline`} 
             {...props} 
             target="_blank"
             rel="noopener noreferrer"

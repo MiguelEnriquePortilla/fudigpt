@@ -138,14 +138,14 @@ const FudiGPTInterface = () => {
     <div className={`flex h-screen ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       {/* Sidebar */}
       <div 
-        className={`${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} 
+        className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200'} 
           border-r transition-all duration-300 flex flex-col
           ${sidebarOpen ? 'w-64' : 'w-0 md:w-16'} overflow-hidden`}
       >
-        <div className="p-4 flex items-center justify-between">
-          {sidebarOpen && <h1 className={`text-xl font-bold ${isDark ? 'text-orange-400' : 'text-orange-600'}`}>FudiGPT</h1>}
+        <div className="p-4 flex items-center justify-between border-b border-gray-700">
+          {sidebarOpen && <h1 className={`text-xl font-bold ${isDark ? 'text-cyan-400' : 'text-cyan-600'}`}>FudiGPT</h1>}
           <button 
-            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`} 
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`} 
             onClick={toggleSidebar}
           >
             {sidebarOpen ? 
@@ -158,7 +158,7 @@ const FudiGPTInterface = () => {
         {/* Nueva conversación */}
         <button 
           className={`mx-3 mb-2 flex items-center ${sidebarOpen ? 'justify-start' : 'justify-center md:justify-center'} 
-            gap-2 px-3 py-2 rounded-lg border ${isDark ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} transition-colors`}
+            gap-2 px-3 py-2 rounded-lg border ${isDark ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} transition-colors mt-3`}
           onClick={startNewConversation}
         >
           <PlusCircle className="w-5 h-5" />
@@ -212,19 +212,20 @@ const FudiGPTInterface = () => {
           // Pantalla inicial tipo Claude
           <div className="flex flex-col items-center justify-center h-full p-4">
             <div className="text-center max-w-2xl">
-              <div className={`w-16 h-16 rounded-full ${isDark ? 'bg-orange-900' : 'bg-orange-100'} flex items-center justify-center mx-auto mb-6`}>
-                <ChefHat className={`w-8 h-8 ${isDark ? 'text-orange-400' : 'text-orange-600'}`} />
+              <div className={`w-24 h-24 rounded-full ${isDark ? 'bg-gray-800' : 'bg-orange-50'} flex items-center justify-center mx-auto mb-8 border-2 ${isDark ? 'border-orange-500' : 'border-orange-400'}`}>
+                <ChefHat className={`w-12 h-12 ${isDark ? 'text-orange-500' : 'text-orange-600'}`} />
               </div>
               
-              <h1 className={`text-3xl font-light mb-6 ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
+              <h1 className={`text-3xl font-light mb-4 ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
                 ¡Bienvenido a FudiGPT!
               </h1>
               
-              <p className={`text-lg mb-8 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
-                Tu asistente virtual para la gestión inteligente de restaurantes
+              <p className={`text-lg mb-10 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+                Tu asistente virtual para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.
               </p>
               
-              <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} rounded-xl max-w-2xl mx-auto p-4 shadow-lg mb-8`}>
+              {/* Cambia el diseño del input */}
+              <div className={`${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'} rounded-lg max-w-2xl mx-auto p-6 shadow-lg mb-12`}>
                 <form onSubmit={handleSubmit} className="flex flex-col">
                   <textarea
                     ref={inputRef}
@@ -232,24 +233,22 @@ const FudiGPTInterface = () => {
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     placeholder="¿Qué deseas saber sobre tu restaurante hoy?"
-                    className={`w-full p-3 ${isDark ? 'bg-gray-800 text-gray-100 placeholder-gray-400' : 'bg-white text-gray-800 placeholder-gray-400'} 
-                      rounded-md outline-none resize-none min-h-[52px]`}
+                    className={`w-full p-4 ${isDark ? 'bg-gray-800 text-gray-100 placeholder-gray-400' : 'bg-white text-gray-800 placeholder-gray-400'} 
+                      rounded-md outline-none resize-none min-h-[60px] focus:ring-2 ${isDark ? 'focus:ring-orange-500' : 'focus:ring-orange-400'}`}
                     rows={inputRows}
                   />
-                  <div className="flex justify-end mt-2">
+                  <div className="flex justify-end mt-4">
                     <button 
                       type="submit"
                       disabled={inputValue.trim() === ''}
-                      className={`p-2 rounded-md ${
+                      className={`px-4 py-2 rounded-md ${
                         inputValue.trim() === '' 
                           ? `${isDark ? 'bg-gray-700 text-gray-500' : 'bg-gray-200 text-gray-400'} cursor-not-allowed` 
-                          : `${isDark ? 'bg-orange-600 hover:bg-orange-700' : 'bg-orange-600 hover:bg-orange-700'} text-white`
-                      }`}
+                          : `${isDark ? 'bg-orange-600 hover:bg-orange-700' : 'bg-orange-500 hover:bg-orange-600'} text-white`
+                      } flex items-center transition-colors duration-200`}
                     >
-                      <span className="flex items-center">
-                        <Send className="h-5 w-5 mr-2" />
-                        Enviar
-                      </span>
+                      <Send className="h-5 w-5 mr-2" />
+                      Enviar
                     </button>
                   </div>
                 </form>
@@ -288,8 +287,8 @@ const FudiGPTInterface = () => {
                 {/* Indicador de carga */}
                 {isLoading && (
                   <div className="flex justify-start mb-6">
-                    <div className={`w-8 h-8 rounded-full ${isDark ? 'bg-orange-900' : 'bg-orange-100'} flex items-center justify-center mr-3`}>
-                      <ChefHat className={`w-5 h-5 ${isDark ? 'text-orange-400' : 'text-orange-600'}`} />
+                    <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-orange-50 border border-orange-100'} flex items-center justify-center mr-3 mt-1 flex-shrink-0`}>
+                      <ChefHat className={`w-6 h-6 ${isDark ? 'text-cyan-400' : 'text-orange-500'}`} />
                     </div>
                     <div className={`px-4 py-3 rounded-lg ${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
                       <div className="flex space-x-2">
@@ -306,27 +305,27 @@ const FudiGPTInterface = () => {
             </div>
             
             {/* Formulario de entrada */}
-            <div className={`fixed bottom-0 left-0 right-0 p-4 ${isDark ? 'bg-gray-900 border-t border-gray-800' : 'bg-gray-50 border-t border-gray-200'}`}>
+            <div className={`fixed bottom-0 left-0 right-0 p-6 ${isDark ? 'bg-gray-900 border-t border-gray-800' : 'bg-gray-50 border-t border-gray-200'}`}>
               <form 
                 onSubmit={handleSubmit}
                 className="max-w-3xl mx-auto"
               >
-                <div className="flex space-x-2">
-                  <div className={`flex-1 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg shadow-sm flex items-center p-2`}>
+                <div className="flex space-x-3">
+                  <div className={`flex-1 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg shadow-sm flex items-center p-3`}>
                     <textarea
                       ref={inputRef}
                       value={inputValue}
                       onChange={handleInputChange}
                       onKeyDown={handleKeyDown}
                       placeholder="Escribe tu consulta aquí..."
-                      className={`flex-1 p-1 ${isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-800'} outline-none resize-none min-h-[24px]`}
+                      className={`flex-1 p-1 ${isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-800'} outline-none resize-none min-h-[24px] placeholder-gray-400`}
                       rows={inputRows}
                     />
                     <button 
                       type="submit"
                       className={`p-2 rounded-full ${
                         inputValue.trim() && !isLoading
-                          ? `${isDark ? 'text-orange-400 hover:bg-gray-700' : 'text-orange-600 hover:bg-orange-50'}`
+                          ? `${isDark ? 'text-cyan-400 hover:bg-gray-700' : 'text-cyan-600 hover:bg-cyan-50'}`
                           : `${isDark ? 'text-gray-600' : 'text-gray-400'} cursor-not-allowed`
                       }`}
                       disabled={!inputValue.trim() || isLoading}
@@ -336,8 +335,8 @@ const FudiGPTInterface = () => {
                   </div>
                 </div>
               </form>
-              <div className={`text-xs text-center mt-2 ${isDark ? 'text-gray-400' : 'text-gray-500'} max-w-3xl mx-auto`}>
-                FudiGPT está optimizado para asistir en la gestión y análisis de datos de tu restaurante.
+              <div className={`text-xs text-center mt-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} max-w-3xl mx-auto`}>
+                FudiGPT está optimizado para asistencia en gestión de restaurantes.
               </div>
             </div>
           </>
@@ -351,10 +350,10 @@ const FudiGPTInterface = () => {
 const SuggestionButton = ({ children, isDark, onClick }) => {
   return (
     <button 
-      className={`px-4 py-2 rounded-md text-sm ${
+      className={`px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
         isDark 
-          ? 'bg-gray-800 text-gray-200 hover:bg-gray-700 border border-gray-700' 
-          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200 shadow-sm'
+          ? 'bg-gray-800 text-cyan-400 hover:bg-gray-700 border border-gray-700 hover:border-cyan-500' 
+          : 'bg-white text-cyan-600 hover:bg-cyan-50 border border-gray-200 hover:border-cyan-400 shadow-sm'
       }`}
       onClick={onClick}
     >
@@ -376,29 +375,29 @@ const MessageBubble = ({ message, isDark }) => {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6`}>
       {/* Avatar del Asistente (solo si no es usuario) */}
       {!isUser && (
-        <div className={`w-8 h-8 rounded-full ${isDark ? 'bg-orange-900' : 'bg-orange-100'} flex items-center justify-center mr-3 mt-1 flex-shrink-0`}>
-          <ChefHat className={`w-5 h-5 ${isDark ? 'text-orange-400' : 'text-orange-600'}`} />
+        <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-orange-50 border border-orange-100'} flex items-center justify-center mr-3 mt-1 flex-shrink-0`}>
+          <ChefHat className={`w-6 h-6 ${isDark ? 'text-cyan-400' : 'text-orange-500'}`} />
         </div>
       )}
       
       {/* Contenido del mensaje */}
-      <div className={`px-4 py-3 rounded-lg max-w-[80%] ${
+      <div className={`px-5 py-4 rounded-lg ${
         isUser 
           ? isDark 
-              ? 'bg-orange-600 text-white' 
-              : 'bg-orange-600 text-white'
+              ? 'bg-cyan-600 text-white' 
+              : 'bg-cyan-600 text-white'
           : isDark
               ? 'bg-gray-800 text-gray-100 border border-gray-700'
-              : 'bg-white border border-gray-200 text-gray-800'
-      }`}>
+              : 'bg-white border border-gray-200 text-gray-800 shadow-sm'
+      } max-w-[75%]`}>
         {isUser ? (
           <div className="whitespace-pre-wrap break-words">{message.content}</div>
         ) : (
           <MarkdownRenderer content={message.content} isDark={isDark} />
         )}
-        <div className={`text-xs mt-1 ${
+        <div className={`text-xs mt-2 ${
           isUser 
-            ? 'text-orange-200' 
+            ? 'text-cyan-200' 
             : isDark ? 'text-gray-400' : 'text-gray-500'
         }`}>
           {formatTime(message.timestamp)}
@@ -407,8 +406,8 @@ const MessageBubble = ({ message, isDark }) => {
       
       {/* Avatar del usuario (solo si es usuario) */}
       {isUser && (
-        <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center ml-3 mt-1 flex-shrink-0">
-          <User className="w-5 h-5 text-gray-600" />
+        <div className="w-10 h-10 rounded-full bg-cyan-100 flex items-center justify-center ml-3 mt-1 flex-shrink-0">
+          <User className="w-6 h-6 text-cyan-600" />
         </div>
       )}
     </div>
