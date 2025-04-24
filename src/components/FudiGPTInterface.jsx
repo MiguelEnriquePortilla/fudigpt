@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { ChefHat, User, Send, Menu, X, MessageSquare, PlusCircle, Moon, Sun, LogOut } from 'lucide-react';
+import { User, Send, Menu, X, MessageSquare, PlusCircle, Moon, Sun, LogOut } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
 
 // Componente principal de FudiGPT
@@ -180,8 +180,12 @@ const FudiGPTInterface = () => {
         <div className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className={`w-8 h-8 rounded-full ${isDark ? 'bg-gray-800' : 'bg-gray-100'} flex items-center justify-center`}>
-                <ChefHat className={`w-4 h-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+              <div className="w-8 h-8 flex items-center justify-center">
+                <img 
+                  src="/images/fudigpt-logo.png" 
+                  alt="FudiGPT Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               {sidebarOpen && <span className="font-medium">Mi Restaurante</span>}
             </div>
@@ -212,8 +216,12 @@ const FudiGPTInterface = () => {
           // Pantalla inicial tipo Claude
           <div className="flex flex-col items-center justify-center h-full p-4">
             <div className="text-center max-w-2xl">
-              <div className={`w-24 h-24 rounded-full ${isDark ? 'bg-gray-800' : 'bg-gray-100'} flex items-center justify-center mx-auto mb-8 border ${isDark ? 'border-gray-700' : 'border-gray-300'}`}>
-                <ChefHat className={`w-12 h-12 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+              <div className="w-32 h-32 mx-auto mb-8">
+                <img 
+                  src="/images/fudigpt-logo.png" 
+                  alt="FudiGPT Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               
               <h1 className={`text-3xl font-light mb-4 ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
@@ -287,8 +295,12 @@ const FudiGPTInterface = () => {
                 {/* Indicador de carga */}
                 {isLoading && (
                   <div className="flex justify-start mb-6">
-                    <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-800' : 'bg-gray-100'} flex items-center justify-center mr-3 mt-1 flex-shrink-0`}>
-                      <ChefHat className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+                    <div className="w-10 h-10 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                      <img 
+                        src="/images/fudigpt-logo.png" 
+                        alt="FudiGPT Logo" 
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                     <div className={`px-4 py-3 rounded-lg ${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
                       <div className="flex space-x-2">
@@ -375,8 +387,12 @@ const MessageBubble = ({ message, isDark }) => {
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6`}>
       {/* Avatar del Asistente (solo si no es usuario) */}
       {!isUser && (
-        <div className={`w-10 h-10 rounded-full ${isDark ? 'bg-gray-800' : 'bg-gray-100'} flex items-center justify-center mr-3 mt-1 flex-shrink-0`}>
-          <ChefHat className={`w-6 h-6 ${isDark ? 'text-gray-400' : 'text-gray-600'}`} />
+        <div className="w-10 h-10 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+          <img 
+            src="/images/fudigpt-logo.png" 
+            alt="FudiGPT Logo" 
+            className="w-full h-full object-contain"
+          />
         </div>
       )}
       
