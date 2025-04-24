@@ -1,14 +1,14 @@
 {
   "short_name": "FudiGPT",
-  "name": "FudiGPT - Asistente para Restaurantes",
+  "name": "FudiGPT - Asistente para restaurantes",
   "icons": [
     {
-      "src": "favicongpt.ico",
+      "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo512.png",
+      "src": "logo192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
@@ -20,7 +20,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#0d1b36",
-  "background_color": "#27e3df",
-  "orientation": "portrait"
+  "theme_color": "#111827",
+  "background_color": "#111827"
 }
