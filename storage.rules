@@ -1,0 +1,33 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Función para comprobar si un usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función para comprobar si el usuario es el propietario de los datos
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Regla predeterminada: denegar todo
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+    
+    // Reglas para archivos de usuario
+    match /users/{userId}/{allUserFiles=**} {
+      // Solo el propietario puede leer/escribir sus archivos
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Reglas para archivos públicos
+    match /public/{publicFile=**} {
+      // Cualquiera puede leer archivos públicos
+      allow read: if true;
+      // Solo usuarios autenticados pueden subir archivos públicos
+      allow write: if isAuthenticated();
+    }
+  }
+}

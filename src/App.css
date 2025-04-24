@@ -1,0 +1,215 @@
+/* Variables CSS globales */
+:root {
+  --fudi-orange: #ff5a1f;
+  --fudi-orange-dark: #d03801;
+  --fudi-orange-light: #feecdc;
+  --fudi-dark: #1a2b33;
+  --fudi-dark-bg: #111827;
+  --fudi-light: #d8e3e7;
+}
+
+/* Estilos generales */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Roboto", 
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Estilos para el modo oscuro */
+.dark {
+  color-scheme: dark;
+}
+
+/* Transiciones suaves */
+.transition-colors {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-25%);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Personalización de scroll */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgb(156, 163, 175);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(107, 114, 128);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: rgb(75, 85, 99);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(107, 114, 128);
+}
+
+/* Estilos para código */
+code {
+  font-family: "JetBrains Mono", source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+  border-radius: 0.25rem;
+}
+
+pre {
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+/* Estilos para el markdown */
+.prose {
+  max-width: 65ch;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.5em;
+  margin-bottom: 1em;
+}
+
+.prose blockquote {
+  font-style: italic;
+  margin: 1em 0;
+}
+
+/* Estilo Claude-like para los mensajes */
+.message-bubble {
+  max-width: 85%;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.user-message {
+  background-color: var(--fudi-orange);
+  color: white;
+  margin-left: auto;
+}
+
+.assistant-message {
+  background-color: white;
+  color: var(--fudi-dark);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dark .assistant-message {
+  background-color: var(--fudi-dark-bg);
+  color: var(--fudi-light);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Estilo para las imágenes */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Input de mensaje estilo Claude */
+.claude-input {
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  width: 100%;
+  resize: none;
+  outline: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.dark .claude-input {
+  background-color: var(--fudi-dark-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Botón enviar estilo Claude */
+.claude-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border-radius: 9999px;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+/* Estilos para el avatar del chef */
+.chef-avatar {
+  background-color: var(--fudi-orange-light);
+  color: var(--fudi-orange);
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark .chef-avatar {
+  background-color: var(--fudi-orange-dark);
+  color: var(--fudi-orange-light);
+}

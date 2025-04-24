@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Función para comprobar si un usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función para comprobar si el usuario es el propietario de los datos
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Reglas para la colección de usuarios
+    match /users/{userId} {
+      // Permitir leer/escribir solo al propietario
+      allow read, write: if isOwner(userId);
+      
+      // Reglas para la subcolección de conversaciones
+      match /conversations/{conversationId} {
+        allow read, write: if isOwner(userId);
+        
+        // Reglas para los mensajes dentro de una conversación
+        match /messages/{messageId} {
+          allow read, write: if isOwner(userId);
+        }
+      }
+      
+      // Reglas para la integración con Poster
+      match /integration/{integrationId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // Reglas para logs de API
+      match /api_logs/{logId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId);
+        // No permitir modificación o eliminación de logs
+        allow update, delete: if false;
+      }
+    }
+    
+    // Reglas para datos públicos (si los hay)
+    match /public/{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
