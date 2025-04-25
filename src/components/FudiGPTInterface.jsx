@@ -7,19 +7,19 @@ import MarkdownRenderer from './MarkdownRenderer';
 const FudiGPTInterface = () => {
   // Acceder al contexto de tema
   const { isDark, toggleTheme } = useTheme();
-  
+
   // Estados
   const [messages, setMessages] = useState([
-    { 
-      id: 1, 
-      role: 'assistant', 
+    {
+      id: 1,
+      role: 'assistant',
       content: '¡Bienvenido a FudiGPT! Soy tu asistente virtual especializado en gestión de restaurantes. ¿En qué puedo ayudarte hoy?',
       timestamp: new Date()
     }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Por defecto cerrado en móvil
   const [chatStarted, setChatStarted] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -29,7 +29,7 @@ const FudiGPTInterface = () => {
   // Ajustar altura del textarea
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
-    
+
     // Contar líneas
     const lines = e.target.value.split('\n').length;
     const calculatedRows = Math.min(lines, maxRows);
@@ -48,17 +48,17 @@ const FudiGPTInterface = () => {
       content: inputValue,
       timestamp: new Date()
     };
-    
+
     setMessages([...messages, userMessage]);
     setInputValue('');
     setInputRows(1);
     setIsLoading(true);
     setChatStarted(true);
-    
+
     // Simular respuesta del asistente (después de 1-3 segundos)
     setTimeout(() => {
       let response;
-      
+
       if (inputValue.toLowerCase().includes('venta')) {
         response = "Las ventas de la última semana aumentaron un 12.5% respecto a la semana anterior, alcanzando $45,782.50. El viernes fue tu mejor día con $9,876.30 en ventas. ¿Quieres ver el desglose por categoría de producto?";
       } else if (inputValue.toLowerCase().includes('inventario') || inputValue.toLowerCase().includes('stock')) {
@@ -83,14 +83,14 @@ const FudiGPTInterface = () => {
       } else {
         response = "Entiendo. Para ayudarte mejor con eso, ¿podrías darme más detalles sobre lo que buscas específicamente? Puedo mostrarte datos de ventas, inventario, costos o tendencias de rendimiento.";
       }
-      
+
       const assistantMessage = {
         id: messages.length + 2,
         role: 'assistant',
         content: response,
         timestamp: new Date()
       };
-      
+
       setMessages(prevMessages => [...prevMessages, assistantMessage]);
       setIsLoading(false);
     }, 1500 + Math.random() * 1500); // Entre 1.5 y 3 segundos
@@ -104,9 +104,9 @@ const FudiGPTInterface = () => {
   // Nueva conversación
   const startNewConversation = () => {
     setMessages([
-      { 
-        id: 1, 
-        role: 'assistant', 
+      {
+        id: 1,
+        role: 'assistant',
         content: '¡Bienvenido a FudiGPT! Soy tu asistente virtual especializado en gestión de restaurantes. ¿En qué puedo ayudarte hoy?',
         timestamp: new Date()
       }
@@ -134,70 +134,90 @@ const FudiGPTInterface = () => {
     inputRef.current?.focus();
   }, []);
 
+  // Ajustar sidebar según tamaño de pantalla
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setSidebarOpen(true);
+      } else {
+        setSidebarOpen(false);
+      }
+    };
+
+    // Ejecutar al montar
+    handleResize();
+
+    // Añadir listener
+    window.addEventListener('resize', handleResize);
+
+    // Limpiar al desmontar
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className={`flex h-screen ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       {/* Sidebar */}
-      <div 
-        className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200'} 
-          border-r transition-all duration-300 flex flex-col
+      <div
+        className={`${isDark ? 'bg-gray-900 border-gray-800' : 'bg-gray-50 border-gray-200'}
+          fixed md:relative z-10 h-full border-r transition-all duration-300 flex flex-col
           ${sidebarOpen ? 'w-64' : 'w-0 md:w-16'} overflow-hidden`}
       >
         <div className="p-4 flex items-center justify-between border-b border-gray-700">
           {sidebarOpen && <h1 className={`text-xl font-light ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>FudiGPT</h1>}
-          <button 
-            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`} 
+          <button
+            className={`p-2 rounded-lg ${isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-100'}`}
             onClick={toggleSidebar}
           >
-            {sidebarOpen ? 
-              <X className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`} /> : 
+            {sidebarOpen ?
+              <X className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`} /> :
               <Menu className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-gray-600'}`} />
             }
           </button>
         </div>
-        
+
         {/* Nueva conversación */}
-        <button 
-          className={`mx-3 mb-2 flex items-center ${sidebarOpen ? 'justify-start' : 'justify-center md:justify-center'} 
+        <button
+          className={`mx-3 mb-2 flex items-center ${sidebarOpen ? 'justify-start' : 'justify-center'}
             gap-2 px-3 py-2 rounded-lg border ${isDark ? 'border-gray-700 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-100'} transition-colors mt-3`}
           onClick={startNewConversation}
         >
           <PlusCircle className="w-5 h-5" />
           {sidebarOpen && <span>Nueva conversación</span>}
         </button>
-        
+
         {/* Navegación */}
         <nav className="mt-2 flex-1 overflow-y-auto">
-          <button 
-            className={`w-full flex items-center py-3 px-4 
+          <button
+            className={`w-full flex items-center py-3 px-4
               ${isDark ? 'text-gray-300 hover:bg-gray-700' : 'text-gray-600 hover:bg-gray-100'} transition-colors`}
           >
             <MessageSquare className="w-5 h-5" />
             {sidebarOpen && <span className="ml-3 text-sm font-medium">Mis conversaciones</span>}
           </button>
         </nav>
-        
+
         {/* Footer del sidebar */}
         <div className={`p-4 border-t ${isDark ? 'border-gray-700' : 'border-gray-200'}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 flex items-center justify-center">
-                <img 
-                  src="/images/fudigpt-logo.png" 
-                  alt="FudiGPT Logo" 
+                <img
+                  src="/images/fudigpt-logo.png"
+                  alt="FudiGPT Logo"
                   className="w-full h-full object-contain"
                 />
               </div>
               {sidebarOpen && <span className="font-medium">Mi Restaurante</span>}
             </div>
-            
+
             {sidebarOpen && (
               <div className="flex space-x-2">
-                <button 
+                <button
                   className={`p-1 rounded-full ${isDark ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`}
                   onClick={toggleTheme}
                 >
-                  {isDark ? 
-                    <Sun className="w-4 h-4 text-gray-400" /> : 
+                  {isDark ?
+                    <Sun className="w-4 h-4 text-gray-400" /> :
                     <Moon className="w-4 h-4 text-gray-500" />
                   }
                 </button>
@@ -209,31 +229,41 @@ const FudiGPTInterface = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Contenido principal */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
+        {/* Botón móvil para mostrar sidebar */}
+        {!sidebarOpen && (
+          <button
+            className="md:hidden fixed top-4 left-4 z-20 p-2 rounded-full bg-gray-200 dark:bg-gray-800 shadow-md"
+            onClick={toggleSidebar}
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        )}
+
         {!chatStarted ? (
           // Pantalla inicial tipo Claude
           <div className="flex flex-col items-center justify-center h-full p-4">
             <div className="text-center max-w-2xl">
-              <div className="w-32 h-32 mx-auto mb-8">
-                <img 
-                  src="/images/fudigpt-logo.png" 
-                  alt="FudiGPT Logo" 
+              <div className="w-24 h-24 sm:w-32 sm:h-32 mx-auto mb-6 sm:mb-8">
+                <img
+                  src="/images/fudigpt-logo.png"
+                  alt="FudiGPT Logo"
                   className="w-full h-full object-contain"
                 />
               </div>
-              
-              <h1 className={`text-3xl font-light mb-4 ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
+
+              <h1 className={`text-2xl sm:text-3xl font-light mb-3 sm:mb-4 ${isDark ? 'text-gray-100' : 'text-gray-800'}`}>
                 FudiGPT
               </h1>
-              
-              <p className={`text-lg mb-10 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
+
+              <p className={`text-base sm:text-lg mb-6 sm:mb-10 px-2 ${isDark ? 'text-gray-300' : 'text-gray-600'}`}>
                 Tu asistente virtual para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.
               </p>
-              
+
               {/* Cambia el diseño del input */}
-              <div className={`${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'} rounded-lg max-w-2xl mx-auto p-6 shadow-sm mb-12`}>
+              <div className={`${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'} rounded-lg max-w-2xl mx-auto p-4 sm:p-6 shadow-sm mb-8 sm:mb-12`}>
                 <form onSubmit={handleSubmit} className="flex flex-col">
                   <textarea
                     ref={inputRef}
@@ -241,17 +271,17 @@ const FudiGPTInterface = () => {
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     placeholder="¿Qué deseas saber sobre tu restaurante hoy?"
-                    className={`w-full p-4 ${isDark ? 'bg-gray-800 text-gray-100 placeholder-gray-400' : 'bg-white text-gray-800 placeholder-gray-400'} 
+                    className={`w-full p-3 sm:p-4 ${isDark ? 'bg-gray-800 text-gray-100 placeholder-gray-400' : 'bg-white text-gray-800 placeholder-gray-400'}
                       rounded-md outline-none resize-none min-h-[60px] focus:ring-1 ${isDark ? 'focus:ring-gray-600' : 'focus:ring-gray-300'}`}
                     rows={inputRows}
                   />
                   <div className="flex justify-end mt-4">
-                    <button 
+                    <button
                       type="submit"
                       disabled={inputValue.trim() === ''}
-                      className={`px-4 py-2 rounded-md ${
-                        inputValue.trim() === '' 
-                          ? `${isDark ? 'bg-gray-700 text-gray-500' : 'bg-gray-200 text-gray-400'} cursor-not-allowed` 
+                      className={`px-3 sm:px-4 py-2 rounded-md ${
+                        inputValue.trim() === ''
+                          ? `${isDark ? 'bg-gray-700 text-gray-500' : 'bg-gray-200 text-gray-400'} cursor-not-allowed`
                           : `${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-700 hover:bg-gray-800'} text-white`
                       } flex items-center transition-colors duration-200`}
                     >
@@ -261,8 +291,8 @@ const FudiGPTInterface = () => {
                   </div>
                 </form>
               </div>
-              
-              <div className="flex flex-wrap justify-center gap-4">
+
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                 <SuggestionButton isDark={isDark} onClick={() => setInputValue("¿Cómo van mis ventas esta semana?")}>
                   ¿Cómo van mis ventas esta semana?
                 </SuggestionButton>
@@ -282,27 +312,27 @@ const FudiGPTInterface = () => {
           // Interfaz de chat
           <>
             {/* Área de chat */}
-            <div className="flex-1 overflow-y-auto p-4 pb-32">
-              <div className="max-w-3xl mx-auto">
+            <div className="flex-1 overflow-y-auto p-2 sm:p-4 pb-20 sm:pb-32">
+              <div className="w-full max-w-3xl mx-auto">
                 {messages.map((message) => (
-                  <MessageBubble 
-                    key={message.id} 
+                  <MessageBubble
+                    key={message.id}
                     message={message}
                     isDark={isDark}
                   />
                 ))}
-                
+
                 {/* Indicador de carga */}
                 {isLoading && (
                   <div className="flex justify-start mb-6">
-                    <div className="w-10 h-10 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                      <img 
-                        src="/images/fudigpt-logo.png" 
-                        alt="FudiGPT Logo" 
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mr-2 sm:mr-3 mt-1 flex-shrink-0">
+                      <img
+                        src="/images/fudigpt-logo.png"
+                        alt="FudiGPT Logo"
                         className="w-full h-full object-contain"
                       />
                     </div>
-                    <div className={`px-4 py-3 rounded-lg ${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
+                    <div className={`px-3 sm:px-4 py-2 sm:py-3 rounded-lg ${isDark ? 'bg-gray-800 border border-gray-700' : 'bg-white border border-gray-200'}`}>
                       <div className="flex space-x-2">
                         <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "0ms" }}></div>
                         <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "150ms" }}></div>
@@ -311,19 +341,19 @@ const FudiGPTInterface = () => {
                     </div>
                   </div>
                 )}
-                
+
                 <div ref={messagesEndRef} />
               </div>
             </div>
-            
+
             {/* Formulario de entrada */}
-            <div className={`fixed bottom-0 left-0 right-0 p-6 ${isDark ? 'bg-gray-900 border-t border-gray-800' : 'bg-gray-50 border-t border-gray-200'}`}>
-              <form 
+            <div className={`fixed bottom-0 left-0 right-0 p-3 sm:p-6 ${isDark ? 'bg-gray-900 border-t border-gray-800' : 'bg-gray-50 border-t border-gray-200'}`}>
+              <form
                 onSubmit={handleSubmit}
                 className="max-w-3xl mx-auto"
               >
-                <div className="flex space-x-3">
-                  <div className={`flex-1 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg shadow-sm flex items-center p-3`}>
+                <div className="flex space-x-2 sm:space-x-3">
+                  <div className={`flex-1 ${isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'} border rounded-lg shadow-sm flex items-center p-2 sm:p-3`}>
                     <textarea
                       ref={inputRef}
                       value={inputValue}
@@ -333,7 +363,7 @@ const FudiGPTInterface = () => {
                       className={`flex-1 p-1 ${isDark ? 'bg-gray-800 text-gray-100' : 'bg-white text-gray-800'} outline-none resize-none min-h-[24px] placeholder-gray-400`}
                       rows={inputRows}
                     />
-                    <button 
+                    <button
                       type="submit"
                       className={`p-2 rounded-full ${
                         inputValue.trim() && !isLoading
@@ -347,7 +377,7 @@ const FudiGPTInterface = () => {
                   </div>
                 </div>
               </form>
-              <div className={`text-xs text-center mt-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} max-w-3xl mx-auto`}>
+              <div className={`text-xs text-center mt-2 sm:mt-3 ${isDark ? 'text-gray-400' : 'text-gray-500'} max-w-3xl mx-auto`}>
                 FudiGPT está optimizado para asistencia en gestión de restaurantes.
               </div>
             </div>
@@ -361,10 +391,10 @@ const FudiGPTInterface = () => {
 // Componente para los botones de sugerencia
 const SuggestionButton = ({ children, isDark, onClick }) => {
   return (
-    <button 
-      className={`px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 ${
-        isDark 
-          ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700' 
+    <button
+      className={`px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 ${
+        isDark
+          ? 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
           : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200 shadow-sm'
       }`}
       onClick={onClick}
@@ -377,53 +407,53 @@ const SuggestionButton = ({ children, isDark, onClick }) => {
 // Componente para cada burbuja de mensaje
 const MessageBubble = ({ message, isDark }) => {
   const isUser = message.role === 'user';
-  
+
   // Formato de hora
   const formatTime = (timestamp) => {
     return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-  
+
   return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-6`}>
+    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'} mb-4 sm:mb-6`}>
       {/* Avatar del Asistente (solo si no es usuario) */}
       {!isUser && (
-        <div className="w-10 h-10 flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-          <img 
-            src="/images/fudigpt-logo.png" 
-            alt="FudiGPT Logo" 
+        <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center mr-2 sm:mr-3 mt-1 flex-shrink-0">
+          <img
+            src="/images/fudigpt-logo.png"
+            alt="FudiGPT Logo"
             className="w-full h-full object-contain"
           />
         </div>
       )}
-      
+
       {/* Contenido del mensaje */}
-      <div className={`px-5 py-4 rounded-lg ${
-        isUser 
-          ? isDark 
-              ? 'bg-gray-700 text-white' 
+      <div className={`px-3 sm:px-5 py-2 sm:py-4 rounded-lg ${
+        isUser
+          ? isDark
+              ? 'bg-gray-700 text-white'
               : 'bg-gray-700 text-white'
           : isDark
               ? 'bg-gray-800 text-gray-100 border border-gray-700'
               : 'bg-white border border-gray-200 text-gray-800'
-      } max-w-[75%]`}>
+      } max-w-[90%] sm:max-w-[75%]`}>
         {isUser ? (
           <div className="whitespace-pre-wrap break-words">{message.content}</div>
         ) : (
           <MarkdownRenderer content={message.content} isDark={isDark} />
         )}
         <div className={`text-xs mt-2 ${
-          isUser 
-            ? 'text-gray-300' 
+          isUser
+            ? 'text-gray-300'
             : isDark ? 'text-gray-400' : 'text-gray-500'
         }`}>
           {formatTime(message.timestamp)}
         </div>
       </div>
-      
+
       {/* Avatar del usuario (solo si es usuario) */}
       {isUser && (
-        <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center ml-3 mt-1 flex-shrink-0">
-          <User className="w-6 h-6 text-gray-600" />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-300 flex items-center justify-center ml-2 sm:ml-3 mt-1 flex-shrink-0">
+          <User className="w-5 h-5 sm:w-6 sm:h-6 text-gray-600" />
         </div>
       )}
     </div>
