@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { User, Send, Menu, X, MessageSquare, PlusCircle, Moon, Sun, LogOut } from 'lucide-react';
 import MarkdownRenderer from './MarkdownRenderer';
+import PosterConnector from './PosterConnector';
+import { usePoster } from '../contexts/PosterContext';
 
 // Componente principal de FudiGPT
 const FudiGPTInterface = () => {
@@ -291,7 +293,6 @@ const FudiGPTInterface = () => {
                   </div>
                 </form>
               </div>
-
               <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
                 <SuggestionButton isDark={isDark} onClick={() => setInputValue("¿Cómo van mis ventas esta semana?")}>
                   ¿Cómo van mis ventas esta semana?
@@ -305,6 +306,10 @@ const FudiGPTInterface = () => {
                 <SuggestionButton isDark={isDark} onClick={() => setInputValue("Muestra un análisis de costos")}>
                   Muestra un análisis de costos
                 </SuggestionButton>
+              </div>
+
+              <div className="mt-8 max-w-md mx-auto">
+                <PosterConnector />
               </div>
             </div>
           </div>

@@ -1,5 +1,6 @@
 // src/services/poster/PosterAuthService.js
-import { db, auth } from '../../firebase';
+import { auth, db } from '../../firebase';
+import { collection, doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import axios from 'axios';
 
 /**
@@ -10,7 +11,7 @@ export class PosterAuthService {
     this.clientId = process.env.REACT_APP_POSTER_CLIENT_ID;
     this.clientSecret = process.env.REACT_APP_POSTER_CLIENT_SECRET;
     this.redirectUri = process.env.REACT_APP_POSTER_REDIRECT_URI;
-    this.tokenCollection = 'posterTokens';
+    this.tokenCollection = 'poster_tokens';
   }
   
   /**
@@ -58,7 +59,7 @@ export class PosterAuthService {
     }
     
     try {
-      await db.collection(this.tokenCollection).doc(currentUser.uid).set({
+      await setDoc(doc(db, this.tokenCollection, currentUser.uid), {
         ...tokens,
         userId: currentUser.uid,
         createdAt: new Date(),
@@ -77,11 +78,12 @@ export class PosterAuthService {
    */
   async hasValidTokens(userId) {
     try {
-      const doc = await db.collection(this.tokenCollection).doc(userId).get();
+      const docRef = doc(db, this.tokenCollection, userId);
+      const docSnap = await getDoc(docRef);
       
-      if (!doc.exists) return false;
+      if (!docSnap.exists()) return false;
       
-      const data = doc.data();
+      const data = docSnap.data();
       // Verificar si los tokens están expirados
       if (data.expiresAt < Date.now()) {
         // Intentar refrescar los tokens
@@ -106,13 +108,14 @@ export class PosterAuthService {
     }
     
     try {
-      const doc = await db.collection(this.tokenCollection).doc(currentUser.uid).get();
+      const docRef = doc(db, this.tokenCollection, currentUser.uid);
+      const docSnap = await getDoc(docRef);
       
-      if (!doc.exists) {
+      if (!docSnap.exists()) {
         throw new Error('No hay tokens almacenados');
       }
       
-      const data = doc.data();
+      const data = docSnap.data();
       
       // Verificar si necesitan refrescarse
       if (data.expiresAt < Date.now()) {
@@ -152,7 +155,7 @@ export class PosterAuthService {
         updatedAt: new Date()
       };
       
-      await db.collection(this.tokenCollection).doc(currentUser.uid).update(tokens);
+      await updateDoc(doc(db, this.tokenCollection, currentUser.uid), tokens);
       
       return true;
     } catch (error) {
@@ -171,12 +174,13 @@ export class PosterAuthService {
     }
     
     try {
-      const doc = await db.collection(this.tokenCollection).doc(currentUser.uid).get();
+      const docRef = doc(db, this.tokenCollection, currentUser.uid);
+      const docSnap = await getDoc(docRef);
       
-      if (doc.exists) {
+      if (docSnap.exists()) {
         // Intentar revocar en Poster
         try {
-          const data = doc.data();
+          const data = docSnap.data();
           await axios.post('https://joinposter.com/api/v2/auth/revoke', {
             client_id: this.clientId,
             client_secret: this.clientSecret,
@@ -188,7 +192,7 @@ export class PosterAuthService {
         }
         
         // Eliminar tokens localmente
-        await db.collection(this.tokenCollection).doc(currentUser.uid).delete();
+        await deleteDoc(docRef);
       }
       
       return true;

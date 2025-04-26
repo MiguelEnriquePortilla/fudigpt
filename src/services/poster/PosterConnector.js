@@ -1,5 +1,5 @@
 // src/services/poster/PosterConnector.js
-import { db, auth } from '../../firebase';
+import { auth } from '../../firebase';
 import { PosterAuthService } from './PosterAuthService';
 import { PosterDataService } from './PosterDataService';
 

@@ -1,5 +1,6 @@
 // src/services/poster/PosterDataService.js
-import { db, auth } from '../../firebase';
+import { auth, db } from '../../firebase';
+import { collection, doc, getDoc, setDoc, addDoc, getDocs, query, where, orderBy, limit, writeBatch, serverTimestamp } from 'firebase/firestore';
 import axios from 'axios';
 
 /**
@@ -8,11 +9,11 @@ import axios from 'axios';
 export class PosterDataService {
   constructor() {
     this.apiBaseUrl = 'https://joinposter.com/api';
-    this.syncCollection = 'posterSync';
+    this.syncCollection = 'poster_sync';
     this.restaurantCollection = 'restaurants';
-    this.menuCollection = 'menu';
-    this.transactionsCollection = 'transactions';
-    this.inventoryCollection = 'inventory';
+    this.menuCollection = 'poster_menu_items';
+    this.transactionsCollection = 'ventas';
+    this.inventoryCollection = 'ingredientes';
   }
 
   /**
@@ -65,12 +66,12 @@ export class PosterDataService {
       country: spot.country || '',
       currency: spot.currency || '',
       posterAccountId: tokens.accountId,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp(),
       userId: currentUser.uid
     };
     
     // Guardar en Firestore
-    await db.collection(this.restaurantCollection).doc(currentUser.uid).set(restaurantData, { merge: true });
+    await setDoc(doc(db, this.restaurantCollection, currentUser.uid), restaurantData, { merge: true });
     
     return restaurantData;
   }
@@ -103,25 +104,25 @@ export class PosterDataService {
       isActive: product.hidden === 0,
       modifiers: [], // Se procesarían los modificadores si se requiere
       posterProductId: product.product_id,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp(),
       userId: currentUser.uid
     }));
     
     // Guardar en Firestore (operación por lotes para mejor rendimiento)
-    const batch = db.batch();
+    const batch = writeBatch(db);
     
     // Primero, crear un documento maestro para el menú
-    const menuRef = db.collection(this.menuCollection).doc(currentUser.uid);
+    const menuRef = doc(db, this.menuCollection, currentUser.uid);
     batch.set(menuRef, {
       userId: currentUser.uid,
       restaurantId: currentUser.uid,
       itemCount: menuItems.length,
-      updatedAt: new Date()
+      updatedAt: serverTimestamp()
     });
     
     // Luego, añadir cada elemento como subdocumento
     menuItems.forEach(item => {
-      const itemRef = menuRef.collection('items').doc(item.id);
+      const itemRef = doc(collection(db, this.menuCollection, currentUser.uid, 'items'), item.id);
       batch.set(itemRef, item);
     });
     
@@ -159,27 +160,27 @@ export class PosterDataService {
       paymentMethod: order.payment_method_name || 'No especificado',
       items: [], // Detalles que se obtendrían con una llamada adicional si se requiere
       posterTransactionId: order.transaction_id,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp(),
       userId: currentUser.uid
     }));
     
     // Guardar en Firestore (operación por lotes)
-    const batch = db.batch();
+    const batch = writeBatch(db);
     
     // Documento maestro
-    const transactionsRef = db.collection(this.transactionsCollection).doc(currentUser.uid);
+    const transactionsRef = doc(db, this.transactionsCollection, currentUser.uid);
     batch.set(transactionsRef, {
       userId: currentUser.uid,
       restaurantId: currentUser.uid,
       transactionCount: transactions.length,
       dateFrom: dateFrom,
       dateTo: new Date(),
-      updatedAt: new Date()
+      updatedAt: serverTimestamp()
     });
     
     // Subdocumentos para cada transacción
     transactions.forEach(transaction => {
-      const transactionRef = transactionsRef.collection('items').doc(transaction.id);
+      const transactionRef = doc(collection(db, this.transactionsCollection, currentUser.uid, 'items'), transaction.id);
       batch.set(transactionRef, transaction);
     });
     
@@ -209,25 +210,25 @@ export class PosterDataService {
       stock: parseFloat(ingredient.storage_left) || 0,
       cost: parseFloat(ingredient.cost) || 0,
       posterIngredientId: ingredient.ingredient_id,
-      updatedAt: new Date(),
+      updatedAt: serverTimestamp(),
       userId: currentUser.uid
     }));
     
     // Guardar en Firestore (operación por lotes)
-    const batch = db.batch();
+    const batch = writeBatch(db);
     
     // Documento maestro
-    const inventoryRef = db.collection(this.inventoryCollection).doc(currentUser.uid);
+    const inventoryRef = doc(db, this.inventoryCollection, currentUser.uid);
     batch.set(inventoryRef, {
       userId: currentUser.uid,
       restaurantId: currentUser.uid,
       itemCount: inventoryItems.length,
-      updatedAt: new Date()
+      updatedAt: serverTimestamp()
     });
     
     // Subdocumentos por cada item
     inventoryItems.forEach(item => {
-      const itemRef = inventoryRef.collection('items').doc(item.id);
+      const itemRef = doc(collection(db, this.inventoryCollection, currentUser.uid, 'items'), item.id);
       batch.set(itemRef, item);
     });
     
@@ -243,8 +244,8 @@ export class PosterDataService {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error('Usuario no autenticado');
     
-    await db.collection(this.syncCollection).doc(currentUser.uid).set({
-      lastSync: new Date(),
+    await setDoc(doc(db, this.syncCollection, currentUser.uid), {
+      lastSync: serverTimestamp(),
       userId: currentUser.uid
     });
     
@@ -260,11 +261,12 @@ export class PosterDataService {
     if (!currentUser) return true;
     
     try {
-      const doc = await db.collection(this.syncCollection).doc(currentUser.uid).get();
+      const docRef = doc(db, this.syncCollection, currentUser.uid);
+      const docSnap = await getDoc(docRef);
       
-      if (!doc.exists) return true;
+      if (!docSnap.exists()) return true;
       
-      const data = doc.data();
+      const data = docSnap.data();
       const lastSync = data.lastSync.toDate();
       const hoursSinceSync = (Date.now() - lastSync.getTime()) / (1000 * 60 * 60);
       
@@ -282,13 +284,14 @@ export class PosterDataService {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error('Usuario no autenticado');
     
-    const doc = await db.collection(this.restaurantCollection).doc(currentUser.uid).get();
+    const docRef = doc(db, this.restaurantCollection, currentUser.uid);
+    const docSnap = await getDoc(docRef);
     
-    if (!doc.exists) {
+    if (!docSnap.exists()) {
       throw new Error('No hay información de restaurante. Por favor sincroniza primero.');
     }
     
-    return doc.data();
+    return docSnap.data();
   }
 
   /**
@@ -298,13 +301,15 @@ export class PosterDataService {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error('Usuario no autenticado');
     
-    const menuDoc = await db.collection(this.menuCollection).doc(currentUser.uid).get();
+    const menuDocRef = doc(db, this.menuCollection, currentUser.uid);
+    const menuDocSnap = await getDoc(menuDocRef);
     
-    if (!menuDoc.exists) {
+    if (!menuDocSnap.exists()) {
       throw new Error('No hay información de menú. Por favor sincroniza primero.');
     }
     
-    const itemsSnapshot = await menuDoc.ref.collection('items').get();
+    const itemsCollectionRef = collection(db, this.menuCollection, currentUser.uid, 'items');
+    const itemsSnapshot = await getDocs(itemsCollectionRef);
     const items = [];
     
     itemsSnapshot.forEach(doc => {
@@ -312,7 +317,7 @@ export class PosterDataService {
     });
     
     return {
-      ...menuDoc.data(),
+      ...menuDocSnap.data(),
       items
     };
   }
@@ -325,44 +330,49 @@ export class PosterDataService {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error('Usuario no autenticado');
     
-    const transactionsDoc = await db.collection(this.transactionsCollection).doc(currentUser.uid).get();
+    const transactionsDocRef = doc(db, this.transactionsCollection, currentUser.uid);
+    const transactionsDocSnap = await getDoc(transactionsDocRef);
     
-    if (!transactionsDoc.exists) {
+    if (!transactionsDocSnap.exists()) {
       throw new Error('No hay información de transacciones. Por favor sincroniza primero.');
     }
     
-    let query = transactionsDoc.ref.collection('items');
+    // Crear una consulta base
+    let itemsCollectionRef = collection(db, this.transactionsCollection, currentUser.uid, 'items');
     
-    // Aplicar filtros si existen
+    // Construir la consulta con filtros
+    let constraints = [];
+    
     if (filters.dateFrom) {
-      query = query.where('date', '>=', filters.dateFrom);
+      constraints.push(where('date', '>=', filters.dateFrom));
     }
     
     if (filters.dateTo) {
-      query = query.where('date', '<=', filters.dateTo);
+      constraints.push(where('date', '<=', filters.dateTo));
     }
     
     if (filters.status) {
-      query = query.where('status', '==', filters.status);
+      constraints.push(where('status', '==', filters.status));
     }
     
-    // Ordenar por fecha descendente por defecto
-    query = query.orderBy('date', 'desc');
+    // Añadir ordenamiento
+    constraints.push(orderBy('date', 'desc'));
     
     // Aplicar límite si existe
     if (filters.limit) {
-      query = query.limit(filters.limit);
+      constraints.push(limit(filters.limit));
     }
     
-    const snapshot = await query.get();
-    const transactions = [];
+    const q = query(itemsCollectionRef, ...constraints);
+    const snapshot = await getDocs(q);
     
+    const transactions = [];
     snapshot.forEach(doc => {
       transactions.push(doc.data());
     });
     
     return {
-      ...transactionsDoc.data(),
+      ...transactionsDocSnap.data(),
       transactions
     };
   }
@@ -374,13 +384,15 @@ export class PosterDataService {
     const currentUser = auth.currentUser;
     if (!currentUser) throw new Error('Usuario no autenticado');
     
-    const inventoryDoc = await db.collection(this.inventoryCollection).doc(currentUser.uid).get();
+    const inventoryDocRef = doc(db, this.inventoryCollection, currentUser.uid);
+    const inventoryDocSnap = await getDoc(inventoryDocRef);
     
-    if (!inventoryDoc.exists) {
+    if (!inventoryDocSnap.exists()) {
       throw new Error('No hay información de inventario. Por favor sincroniza primero.');
     }
     
-    const itemsSnapshot = await inventoryDoc.ref.collection('items').get();
+    const itemsCollectionRef = collection(db, this.inventoryCollection, currentUser.uid, 'items');
+    const itemsSnapshot = await getDocs(itemsCollectionRef);
     const items = [];
     
     itemsSnapshot.forEach(doc => {
@@ -388,7 +400,7 @@ export class PosterDataService {
     });
     
     return {
-      ...inventoryDoc.data(),
+      ...inventoryDocSnap.data(),
       items
     };
   }
