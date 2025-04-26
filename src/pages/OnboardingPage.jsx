@@ -1,6 +1,6 @@
 // src/pages/OnboardingPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import posterConnector from '../services/poster/PosterConnector';
 import { Restaurant } from '../models/Restaurant';
@@ -25,6 +25,7 @@ const OnboardingPage = () => {
     password: '',
     confirmPassword: ''
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   // Maneja cambios en el formulario
   const handleInputChange = (e) => {
@@ -33,6 +34,11 @@ const OnboardingPage = () => {
       ...restaurantInfo,
       [name]: value
     });
+  };
+
+  // Alternar visibilidad de contraseña
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   // Función para validar el formulario
@@ -166,254 +172,229 @@ const OnboardingPage = () => {
     navigate('/chat');
   };
 
-  // Renderizar paso actual
-  const renderStep = () => {
-    switch (currentStep) {
-      case 1:
-        return renderRegistrationForm();
-      case 2:
-        return renderPosterConnection();
-      case 3:
-        return renderSyncProgress();
-      case 4:
-        return renderSuccess();
-      default:
-        return renderRegistrationForm();
-    }
-  };
-
-  // Paso 1: Formulario de registro
-  const renderRegistrationForm = () => (
-    <div className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">JOIN THE FUDIVERSE</h2>
-      <p className="text-gray-600 mb-6 text-center">Convierte los datos de tu restaurante en insights accionables con IA</p>
-      
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
-      
-      <form onSubmit={handleRegisterSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-            Nombre del Restaurante *
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={restaurantInfo.name}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="address">
-            Dirección
-          </label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            value={restaurantInfo.address}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
-            Teléfono
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={restaurantInfo.phone}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-            Email *
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={restaurantInfo.email}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        
-        <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-            Contraseña *
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={restaurantInfo.password}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        
-        <div className="mb-6">
-          <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
-            Confirmar Contraseña *
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={restaurantInfo.confirmPassword}
-            onChange={handleInputChange}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            required
-          />
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-          >
-            {isLoading ? 'Registrando...' : 'Registrar Restaurante'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-
-  // Paso 2: Conexión con Poster
-  const renderPosterConnection = () => (
-    <div className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Conectar con Poster POS</h2>
-      
-      {successMessage && <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">{successMessage}</div>}
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
-      
-      <div className="mb-6">
-        <p className="text-gray-700 mb-4">
-          Para obtener insights valiosos de tu restaurante, necesitamos conectarnos a tu cuenta de Poster POS.
-        </p>
-        <p className="text-gray-700 mb-4">
-          Una vez conectados, sincronizaremos automáticamente tu menú, transacciones e inventario.
-        </p>
-      </div>
-      
-      <button
-        onClick={handleConnectPoster}
-        disabled={isLoading}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-      >
-        {isLoading ? 'Conectando...' : 'Conectar con Poster'}
-      </button>
-    </div>
-  );
-
-  // Paso 3: Progreso de sincronización
-  const renderSyncProgress = () => (
-    <div className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">Sincronizando Datos</h2>
-      
-      {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>}
-      
-      <div className="mb-6">
-        <p className="text-gray-700 mb-4 text-center">
-          Estamos sincronizando tus datos desde Poster. Esto puede tomar unos momentos.
-        </p>
-        
-        <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div 
-            className="bg-blue-600 h-2.5 rounded-full"
-            style={{ width: `${syncStatus.progress}%` }}
-          ></div>
-        </div>
-        <p className="text-right text-sm text-gray-600 mt-1">{syncStatus.progress}%</p>
-      </div>
-    </div>
-  );
-
-  // Paso 4: Éxito
-  const renderSuccess = () => (
-    <div className="bg-white p-8 rounded-lg shadow-md max-w-md mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-center">¡Bienvenido al FUDIVERSE!</h2>
-      
-      <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-        <p className="font-bold">Integración exitosa</p>
-        <p>Tu restaurante ha sido registrado y conectado con Poster.</p>
-      </div>
-      
-      <div className="mb-6">
-        <p className="text-gray-700 mb-4">
-          Hemos sincronizado tus datos correctamente y estamos listos para ayudarte a obtener insights valiosos para tu negocio.
-        </p>
-      </div>
-      
-      <button
-        onClick={handleFinishOnboarding}
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
-      >
-        Talk to Fudi
-      </button>
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="mb-12 text-center">
-        <h1 className="text-4xl font-extrabold text-gray-900 mb-2">FUDIVERSE</h1>
-        <p className="text-lg text-gray-600">Potencia tu restaurante con inteligencia artificial</p>
-      </div>
-      
-      {/* Indicador de pasos */}
-      <div className="max-w-md mx-auto mb-8">
-        <div className="flex items-center justify-between">
-          <div className={`flex flex-col items-center ${currentStep >= 1 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`rounded-full h-8 w-8 flex items-center justify-center border-2 ${currentStep >= 1 ? 'border-blue-600 bg-blue-100' : 'border-gray-400'}`}>
-              1
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center items-center p-4">
+      <div className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-xl">
+        {/* Imagen de Fudi */}
+        <div className="bg-blue-900 p-6 flex justify-center">
+          <img 
+            src="/placeholder-fudi.png" 
+            alt="Fudi Bot" 
+            className="w-48 h-48"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"%3E%3Crect width="240" height="240" fill="%23152238"%3E%3C/rect%3E%3Crect x="60" y="60" width="120" height="80" fill="%2350E6FF" rx="10"%3E%3C/rect%3E%3Crect x="80" y="150" width="80" height="40" fill="%2350E6FF" rx="5"%3E%3C/rect%3E%3Crect x="90" y="80" width="20" height="20" fill="%23152238"%3E%3C/rect%3E%3Crect x="130" y="80" width="20" height="20" fill="%23152238"%3E%3C/rect%3E%3Cpath d="M 90 120 Q 120 140, 150 120" stroke="%23152238" stroke-width="6" fill="none"%3E%3C/path%3E%3Ctext x="115" y="175" font-size="20" text-anchor="middle" font-family="sans-serif" fill="%23FF3E89"%3Efudi%3C/text%3E%3C/svg%3E';
+            }}
+          />
+        </div>
+        
+        {/* Título */}
+        <div className="text-center pt-6 pb-2">
+          <h2 className="text-xl font-bold text-gray-700">[join_FudiGPT™]</h2>
+          <p className="text-sm text-gray-500 mt-1">Una visión inteligente de tu restaurante</p>
+        </div>
+        
+        {/* Formulario o contenido según paso actual */}
+        <div className="px-8 py-6">
+          {error && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
+              {error}
             </div>
-            <div className="text-xs mt-1">Registro</div>
-          </div>
+          )}
           
-          <div className={`flex-grow border-t ${currentStep >= 2 ? 'border-blue-600' : 'border-gray-400'} mx-2`}></div>
-          
-          <div className={`flex flex-col items-center ${currentStep >= 2 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`rounded-full h-8 w-8 flex items-center justify-center border-2 ${currentStep >= 2 ? 'border-blue-600 bg-blue-100' : 'border-gray-400'}`}>
-              2
+          {successMessage && currentStep === 2 && (
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
+              {successMessage}
             </div>
-            <div className="text-xs mt-1">Conexión</div>
-          </div>
+          )}
           
-          <div className={`flex-grow border-t ${currentStep >= 3 ? 'border-blue-600' : 'border-gray-400'} mx-2`}></div>
+          {currentStep === 1 && (
+            <form onSubmit={handleRegisterSubmit}>
+              <div className="mb-4">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder="Email"
+                    value={restaurantInfo.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder="Password"
+                    value={restaurantInfo.password}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <button
+                      type="button"
+                      className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                      onClick={togglePasswordVisibility}
+                    >
+                      {showPassword ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder="Confirm Password"
+                    value={restaurantInfo.confirmPassword}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div className="mb-4">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder="Restaurant Name"
+                    value={restaurantInfo.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+              
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+              >
+                {isLoading ? 'Registrando...' : 'SIGN UP'}
+              </button>
+              
+              <div className="mt-4">
+                <select
+                  className="w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-500"
+                >
+                  <option value="">¿Qué rol tienes dentro de la organización?</option>
+                  <option value="owner">Dueño</option>
+                  <option value="manager">Gerente</option>
+                  <option value="chef">Chef</option>
+                  <option value="other">Otro</option>
+                </select>
+              </div>
+            </form>
+          )}
           
-          <div className={`flex flex-col items-center ${currentStep >= 3 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`rounded-full h-8 w-8 flex items-center justify-center border-2 ${currentStep >= 3 ? 'border-blue-600 bg-blue-100' : 'border-gray-400'}`}>
-              3
+          {currentStep === 2 && (
+            <div>
+              <p className="text-gray-700 mb-4">
+                Para obtener insights valiosos de tu restaurante, necesitamos conectarnos a tu cuenta de Poster POS.
+              </p>
+              <p className="text-gray-700 mb-4">
+                Una vez conectados, sincronizaremos automáticamente tu menú, transacciones e inventario.
+              </p>
+              
+              <button
+                onClick={handleConnectPoster}
+                disabled={isLoading}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+              >
+                {isLoading ? 'Conectando...' : 'Conectar con Poster'}
+              </button>
             </div>
-            <div className="text-xs mt-1">Sincronización</div>
-          </div>
+          )}
           
-          <div className={`flex-grow border-t ${currentStep >= 4 ? 'border-blue-600' : 'border-gray-400'} mx-2`}></div>
-          
-          <div className={`flex flex-col items-center ${currentStep >= 4 ? 'text-blue-600' : 'text-gray-400'}`}>
-            <div className={`rounded-full h-8 w-8 flex items-center justify-center border-2 ${currentStep >= 4 ? 'border-blue-600 bg-blue-100' : 'border-gray-400'}`}>
-              4
+          {currentStep === 3 && (
+            <div>
+              <p className="text-gray-700 mb-4 text-center">
+                Estamos sincronizando tus datos desde Poster. Esto puede tomar unos momentos.
+              </p>
+              
+              <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                <div 
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${syncStatus.progress}%` }}
+                ></div>
+              </div>
+              <p className="text-right text-sm text-gray-600 mb-4">{syncStatus.progress}%</p>
             </div>
-            <div className="text-xs mt-1">Listo</div>
-          </div>
+          )}
+          
+          {currentStep === 4 && (
+            <div>
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                <p className="font-bold">Integración exitosa</p>
+                <p>Tu restaurante ha sido registrado y conectado con Poster.</p>
+              </div>
+              
+              <p className="text-gray-700 mb-4">
+                Hemos sincronizado tus datos correctamente y estamos listos para ayudarte a obtener insights valiosos para tu negocio.
+              </p>
+              
+              <button
+                onClick={handleFinishOnboarding}
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+              >
+                Talk to Fudi
+              </button>
+            </div>
+          )}
+          
+          {currentStep === 1 && (
+            <div className="mt-4 text-center text-sm">
+              <span className="text-gray-600">Already have an account? </span>
+              <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+                Login
+              </Link>
+            </div>
+          )}
         </div>
       </div>
-      
-      {renderStep()}
     </div>
   );
 };
