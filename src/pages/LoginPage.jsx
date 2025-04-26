@@ -52,15 +52,15 @@ const LoginPage = () => {
       <div className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-xl">
         {/* Imagen de Fudi */}
         <div className="bg-blue-900 p-6 flex justify-center">
-          <img 
-            src="/placeholder-fudi.png" 
-            alt="Fudi Bot" 
-            className="w-48 h-48"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"%3E%3Crect width="240" height="240" fill="%23152238"%3E%3C/rect%3E%3Crect x="60" y="60" width="120" height="80" fill="%2350E6FF" rx="10"%3E%3C/rect%3E%3Crect x="80" y="150" width="80" height="40" fill="%2350E6FF" rx="5"%3E%3C/rect%3E%3Crect x="90" y="80" width="20" height="20" fill="%23152238"%3E%3C/rect%3E%3Crect x="130" y="80" width="20" height="20" fill="%23152238"%3E%3C/rect%3E%3Cpath d="M 90 120 Q 120 140, 150 120" stroke="%23152238" stroke-width="6" fill="none"%3E%3C/path%3E%3Ctext x="115" y="175" font-size="20" text-anchor="middle" font-family="sans-serif" fill="%23FF3E89"%3Efudi%3C/text%3E%3C/svg%3E';
-            }}
-          />
+        <img 
+          src="/My ChatGPT image.svg" 
+          alt="Fudi Bot" 
+          className="w-48 h-48"
+          onError={(e) => {
+           e.target.onerror = null;
+           e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240"%3E%3Crect width="240" height="240" fill="%23152238"%3E%3C/rect%3E%3Crect x="60" y="60" width="120" height="80" fill="%2350E6FF" rx="10"%3E%3C/rect%3E%3Crect x="80" y="150" width="80" height="40" fill="%2350E6FF" rx="5"%3E%3C/rect%3E%3Crect x="90" y="80" width="20" height="20" fill="%23152238"%3E%3C/rect%3E%3Crect x="130" y="80" width="20" height="20" fill="%23152238"%3E%3C/rect%3E%3Cpath d="M 90 120 Q 120 140, 150 120" stroke="%23152238" stroke-width="6" fill="none"%3E%3C/path%3E%3Ctext x="115" y="175" font-size="20" text-anchor="middle" font-family="sans-serif" fill="%23FF3E89"%3Efudi%3C/text%3E%3C/svg%3E';
+          }}
+       />
         </div>
         
         {/* Título */}

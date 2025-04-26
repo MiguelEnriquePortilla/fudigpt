@@ -178,7 +178,7 @@ const ChatPage = () => {
             <div className="flex flex-col items-center justify-center h-full">
               <div className="mb-8 w-32 h-32">
                 <img
-                  src="/placeholder-fudi.png"
+                  src="/My ChatGPT image.svg"
                   alt="Fudi Bot"
                   className="w-full h-full object-contain"
                   onError={(e) => {
@@ -232,7 +232,7 @@ const ChatPage = () => {
                   {message.sender === 'bot' && (
                     <div className="w-8 h-8 rounded-full bg-cyan-500 mr-3 flex-shrink-0 self-end">
                       <img
-                        src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%2350E6FF'%3E%3C/rect%3E%3Ctext x='50%25' y='50%25' font-size='14' text-anchor='middle' alignment-baseline='middle' font-family='monospace' fill='%23152238'%3EF%3C/text%3E%3C/svg%3E"
+                        src="/My ChatGPT image.svg"
                         alt="Fudi"
                         className="w-full h-full rounded-full"
                       />

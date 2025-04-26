@@ -178,7 +178,7 @@ const OnboardingPage = () => {
         {/* Imagen de Fudi */}
         <div className="bg-blue-900 p-6 flex justify-center">
           <img 
-            src="/placeholder-fudi.png" 
+            src="/My ChatGPT image.svg" 
             alt="Fudi Bot" 
             className="w-48 h-48"
             onError={(e) => {
