@@ -11,11 +11,12 @@ on:
 jobs:
   generate-status:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0  # Necesario para obtener todo el historial de git
           
       - name: Set up Python
@@ -28,9 +29,7 @@ jobs:
           python .github/scripts/generate_project_status.py
           
       - name: Commit changes if any
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add docs/project-status.md
-          git diff --quiet && git diff --staged --quiet || git commit -m "Auto-update project status report"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: "Auto-update project status report"
+          file_pattern: docs/project-status.md
