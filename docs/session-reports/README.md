@@ -39,7 +39,11 @@ Ejemplo: `2025-04-25-estructuracion-github-poster.md`
 4. Hacer commit y push al repositorio
 
 ## Índice de Reportes
-
 | Fecha | Sesión | Enfoque Principal |
 |-------|--------|-------------------|
-| 2025-04-25 | [Estructuración GitHub para Poster](./2025-04-25-estructuracion-github-poster.md) | Configuración de documentación y flujo de trabajo |
+| 2025-04-27 | [Implementación de Automatización de Documentación](./2025-04-27-implementacion-automatizacion-documentacion.md) | Implementamos un sistema de automatización para ma... |
+| 2025-04-26 | [2025-04-26-refactorizacion-arquitectura-fudiverse](./2025-04-26-refactorizacion-arquitectura-fudiverse.md) | No disponible... |
+| 2025-04-26 | [Implementación de Onboarding y Login con Firebase v9](./2025-04-26-implementacion-paginas-onboarding-login.md) | Implementamos las páginas de Onboarding y Login pa... |
+| 2025-04-26 | [2025-04-26-finalizacion-documentacion-estructura](./2025-04-26-finalizacion-documentacion-estructura.md) | No disponible... |
+| 2025-04-26 | [Diseño e Implementación de Interfaces de Usuario](./2025-04-26-diseno-implementacion-interfaces.md) | Completamos el diseño e implementación de una inte... |
+| 2025-04-25 | [2025-04-25-estructuracion-github-poster](./2025-04-25-estructuracion-github-poster.md) | No disponible... | 2025-04-25 | [Estructuración GitHub para Poster](./2025-04-25-estructuracion-github-poster.md) | Configuración de documentación y flujo de trabajo |

@@ -50,7 +50,9 @@ Los ADRs son documentos históricos y generalmente no deberían modificarse desp
 
 | Número | Título | Estado | Fecha |
 |--------|--------|--------|-------|
-| [ADR-001](./0001-integracion-con-poster-pos.md) | Integración con Poster POS | Aceptada | 2025-02-15 |
+| [ADR-001](./0001-integracion-con-poster-pos.md) | ADR-001: Integración con Poster POS | Aceptada | 2025-02-15 |
+| [ADR-002](./0002-arquitectura-para-fudiverse.md) | ADR-0002: Arquitectura para FUDIVERSE | Aceptada | 2025-04-26 |
+| [Sin número](./adr-template.md) | ADR-[número]: [Título de la Decisión] | [Propuesta | Aceptada | Rechazada | Obsoleta | Reemplazada] | Sin fecha | [ADR-001](./0001-integracion-con-poster-pos.md) | Integración con Poster POS | Aceptada | 2025-02-15 |
 | [ADR-002](./0002-estructura-de-datos-firebase.md) | Estructura de Datos en Firebase | Aceptada | 2025-02-20 |
 | [ADR-003](./0003-enfoque-de-autenticacion.md) | Enfoque de Autenticación | Aceptada | 2025-02-22 |
 | [ADR-004](./0004-estrategia-de-sincronizacion.md) | Estrategia de Sincronización de Datos | Aceptada | 2025-03-01 |
