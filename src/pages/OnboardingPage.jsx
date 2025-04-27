@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import posterConnector from '../services/poster/PosterConnector';
+import * as posterService from '../services/poster/posterService';
 import { Restaurant } from '../models/Restaurant';
 import { db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
