@@ -1,6 +1,6 @@
 {
   "short_name": "FudiGPT",
-  "name": "FudiGPT - Asistente para restaurantes",
+  "name": "FudiGPT - Ai para restaurantes",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,9 +20,9 @@
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ff5a1f",
-  "background_color": "#111827",
+  "theme_color": "#0D1B2A",
+  "background_color": "#1B263B",
   "orientation": "portrait"
 }

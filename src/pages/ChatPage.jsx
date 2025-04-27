@@ -11,6 +11,7 @@ const ChatPage = () => {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
   const [activeConversation, setActiveConversation] = useState('new');
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Simular historial de conversaciones
   const [conversations, setConversations] = useState([
@@ -24,7 +25,7 @@ const ChatPage = () => {
         { 
           id: 1, 
           sender: 'bot', 
-          content: '👋 ¡Hola! Soy Fudi, tu asistente virtual para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.',
+          content: '👋 JOIN THE FUDIVERSE. Soy Fudi, tu Ai para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.',
           timestamp: new Date()
         }
       ]);
@@ -60,10 +61,11 @@ const ChatPage = () => {
       { 
         id: 1, 
         sender: 'bot', 
-        content: '👋 ¡Hola! Soy Fudi, tu asistente virtual para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.',
+        content: '👋 JOIN THE FUDIVERSE. Soy Fudi, tu Ai para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.',
         timestamp: new Date()
       }
     ]);
+    setSidebarOpen(false);
   };
 
   // Manejar envío de mensaje
@@ -94,12 +96,14 @@ const ChatPage = () => {
       );
     }
 
+    setSidebarOpen(false);
+
     // Simular respuesta del bot
     setTimeout(() => {
       const botReply = {
         id: messages.length + 2,
         sender: 'bot',
-        content: `Estoy procesando tu consulta sobre "${inputMessage}". En breve, esta integración se conectará con los datos reales de tu restaurante.`,
+        content: `Estoy procesando tu consulta sobre "${inputMessage}".`,
         timestamp: new Date()
       };
       
@@ -111,14 +115,29 @@ const ChatPage = () => {
   // Función para manejar clicks en preguntas sugeridas
   const handleSuggestedQuestion = (question) => {
     setInputMessage(question);
-    // Opcionalmente, enviar el mensaje automáticamente
-    // setTimeout(() => handleSendMessage({ preventDefault: () => {} }), 100);
+    setSidebarOpen(false);
+  };
+
+  // Cerrar sidebar al hacer clic en una conversación
+  const handleConversationSelect = (conversationId) => {
+    setActiveConversation(conversationId);
+    setSidebarOpen(false);
   };
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
+      {/* Botón Hamburguesa para móviles */}
+      <button 
+        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-gray-800 text-white rounded-lg flex items-center justify-center"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? '✕' : '☰'}
+      </button>
+
       {/* Sidebar */}
-      <div className="w-64 bg-gray-800 flex flex-col border-r border-gray-700">
+      <div className={"w-64 bg-gray-800 flex flex-col border-r border-gray-700 md:relative fixed inset-y-0 left-0 transform " + 
+           (sidebarOpen ? 'translate-x-0' : '-translate-x-full') + 
+           " md:translate-x-0 transition-transform duration-300 ease-in-out z-40"}>
         <div className="p-4 border-b border-gray-700">
           <h1 className="text-xl font-bold text-cyan-400">FudiGPT</h1>
         </div>
@@ -137,8 +156,9 @@ const ChatPage = () => {
           {conversations.filter(conv => conv.id !== 'new').map(conversation => (
             <button
               key={conversation.id}
-              onClick={() => setActiveConversation(conversation.id)}
-              className={`w-full px-4 py-2 text-left hover:bg-gray-700 ${activeConversation === conversation.id ? 'bg-gray-700' : ''}`}
+              onClick={() => handleConversationSelect(conversation.id)}
+              className={"w-full px-4 py-2 text-left hover:bg-gray-700 " + 
+                        (activeConversation === conversation.id ? 'bg-gray-700' : '')}
             >
               <div className="truncate font-medium">{conversation.title}</div>
               <div className="text-xs text-gray-400">{conversation.date.toLocaleDateString()}</div>
@@ -163,11 +183,19 @@ const ChatPage = () => {
         </div>
       </div>
       
+      {/* Overlay para cerrar el sidebar */}
+      {sidebarOpen && (
+        <div 
+          className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-30"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+      
       {/* Main content */}
       <div className="flex-1 flex flex-col">
         {/* Chat header */}
         <header className="py-3 px-6 border-b border-gray-700 flex justify-between items-center">
-          <h2 className="text-lg font-semibold">
+          <h2 className="text-lg font-semibold ml-10 md:ml-0">
             {activeConversation === 'new' ? 'Nueva conversación' : conversations.find(c => c.id === activeConversation)?.title}
           </h2>
         </header>
@@ -227,7 +255,7 @@ const ChatPage = () => {
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={"flex " + (message.sender === 'user' ? 'justify-end' : 'justify-start')}
                 >
                   {message.sender === 'bot' && (
                     <div className="w-8 h-8 rounded-full bg-cyan-500 mr-3 flex-shrink-0 self-end">
@@ -240,27 +268,25 @@ const ChatPage = () => {
                   )}
                   
                   <div
-                    className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-4 py-3 rounded-lg ${
-                      message.sender === 'user'
-                        ? 'bg-purple-700'
-                        : 'bg-cyan-500 text-gray-900'
-                    }`}
+                    className={"max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-4 py-3 rounded-lg " + 
+                              (message.sender === 'user' 
+                                ? 'bg-gray-800 text-white' 
+                                : 'bg-transparent text-white')}
                   >
-                    <div className={message.sender === 'user' ? 'text-white' : 'text-gray-900'}>
+                    <div>
                       {message.content}
                     </div>
                     <div
-                      className={`text-xs mt-1 ${
-                        message.sender === 'user' ? 'text-purple-300' : 'text-cyan-800'
-                      }`}
+                      className={"text-xs mt-1 " + 
+                                (message.sender === 'user' ? 'text-gray-400' : 'text-gray-400')}
                     >
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                   
                   {message.sender === 'user' && (
-                    <div className="w-8 h-8 rounded-full bg-purple-600 ml-3 flex-shrink-0 self-end flex items-center justify-center">
-                      <span className="text-white font-medium">
+                    <div className="w-8 h-8 rounded-full bg-cyan-500 ml-3 flex-shrink-0 self-end flex items-center justify-center">
+                      <span className="text-gray-900 font-medium">
                         {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
                       </span>
                     </div>

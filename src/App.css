@@ -1,11 +1,13 @@
 /* Variables CSS globales */
 :root {
-  --fudi-orange: #ff5a1f;
-  --fudi-orange-dark: #d03801;
-  --fudi-orange-light: #feecdc;
-  --fudi-dark: #1a2b33;
-  --fudi-dark-bg: #111827;
-  --fudi-light: #d8e3e7;
+  --primary-dark: #0D1B2A;
+  --primary: #1B263B;
+  --primary-light: #415A77;
+  --accent: #778DA9;
+  --text: #E0E1DD;
+  --user-message-bg: #1B263B;
+  --assistant-message-bg: transparent;
+  --highlight: #50E6FF; /* Color del logo Fudi */
 }
 
 /* Estilos generales */
@@ -212,4 +214,69 @@ img {
 .dark .chef-avatar {
   background-color: var(--fudi-orange-dark);
   color: var(--fudi-orange-light);
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Estilo específico para pantallas móviles */
+@media (max-width: 768px) {
+  .app-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 0;
+    position: fixed;
+    z-index: 999;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.open {
+    width: 80%;
+    max-width: 300px;
+    transform: translateX(0);
+  }
+  
+  .chat-main {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .toggle-sidebar-btn {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+  }
+}
+
+.bg-fudi-dark {
+  background-color: #1B263B;
+}
+
+.border-fudi-medium {
+  border-color: #415A77;
+}
+
+.text-fudi-highlight {
+  color: #50E6FF;
 }

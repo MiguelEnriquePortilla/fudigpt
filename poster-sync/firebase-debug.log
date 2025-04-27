@@ -1,0 +1,325 @@
+[debug] [2025-04-25T16:36:18.012Z] ----------------------------------------------------------------------
+[debug] [2025-04-25T16:36:18.015Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\migue\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions:syncPosterDataManual
+[debug] [2025-04-25T16:36:18.015Z] CLI Version:   14.2.0
+[debug] [2025-04-25T16:36:18.015Z] Platform:      win32
+[debug] [2025-04-25T16:36:18.015Z] Node Version:  v22.14.0
+[debug] [2025-04-25T16:36:18.015Z] Time:          Fri Apr 25 2025 11:36:18 GMT-0500 (hora de verano central)
+[debug] [2025-04-25T16:36:18.016Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-04-25T16:36:18.208Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-04-25T16:36:18.209Z] > authorizing via signed-in user (fudiverse@gmail.com)
+[debug] [2025-04-25T16:36:18.209Z] [iam] checking project fudi-verse-66v9pu for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-04-25T16:36:18.210Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:18.210Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:18.211Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions [none]
+[debug] [2025-04-25T16:36:18.211Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:18.212Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-04-25T16:36:18.665Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions 200
+[debug] [2025-04-25T16:36:18.665Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-04-25T16:36:18.665Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:18.665Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:18.665Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/fudi-verse-66v9pu/serviceAccounts/fudi-verse-66v9pu@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-04-25T16:36:18.665Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/fudi-verse-66v9pu/serviceAccounts/fudi-verse-66v9pu@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-04-25T16:36:19.113Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/fudi-verse-66v9pu/serviceAccounts/fudi-verse-66v9pu@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-04-25T16:36:19.113Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/fudi-verse-66v9pu/serviceAccounts/fudi-verse-66v9pu@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'fudi-verse-66v9pu'...
+[info] 
+[info] i  deploying functions 
+[info] +  functions: Finished running predeploy script. 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] +  functions: Finished running predeploy script. 
+[debug] [2025-04-25T16:36:19.635Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.635Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.636Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu [none]
+[debug] [2025-04-25T16:36:19.777Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu 200
+[debug] [2025-04-25T16:36:19.778Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu {"projectNumber":"402078905805","projectId":"fudi-verse-66v9pu","lifecycleState":"ACTIVE","name":"FudiVerse","labels":{"firebase":"enabled"},"createTime":"2025-03-31T16:35:14.983447Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:19.779Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.779Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.780Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.780Z] Checked if tokens are valid: true, expires at: 1745600013782
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:19.781Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.781Z] Checked if tokens are valid: true, expires at: 1745600013782
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:19.781Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.781Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:19.781Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-04-25T16:36:19.781Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:19.784Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-04-25T16:36:19.784Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:19.786Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudbuild.googleapis.com [none]
+[debug] [2025-04-25T16:36:19.786Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudbuild.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:19.787Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/artifactregistry.googleapis.com [none]
+[debug] [2025-04-25T16:36:19.787Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/artifactregistry.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:20.298Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/runtimeconfig.googleapis.com 200
+[debug] [2025-04-25T16:36:20.298Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-04-25T16:36:20.321Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudfunctions.googleapis.com 200
+[debug] [2025-04-25T16:36:20.321Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudfunctions.googleapis.com [omitted]
+[info] +  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:20.322Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/artifactregistry.googleapis.com 200
+[debug] [2025-04-25T16:36:20.323Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/artifactregistry.googleapis.com [omitted]
+[info] +  artifactregistry: required API artifactregistry.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:20.331Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudbuild.googleapis.com 200
+[debug] [2025-04-25T16:36:20.331Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/cloudbuild.googleapis.com [omitted]
+[info] +  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:20.332Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:20.332Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:20.332Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/adminSdkConfig [none]
+[debug] [2025-04-25T16:36:20.744Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/adminSdkConfig 200
+[debug] [2025-04-25T16:36:20.745Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/adminSdkConfig {"projectId":"fudi-verse-66v9pu","storageBucket":"fudi-verse-66v9pu.firebasestorage.app"}
+[debug] [2025-04-25T16:36:20.745Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:20.745Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:20.746Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs [none]
+[debug] [2025-04-25T16:36:21.089Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs 200
+[debug] [2025-04-25T16:36:21.089Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs {"configs":[{"name":"projects/fudi-verse-66v9pu/configs/openai"},{"name":"projects/fudi-verse-66v9pu/configs/project"}]}
+[debug] [2025-04-25T16:36:21.089Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.090Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.090Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.090Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.090Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/openai/variables [none]
+[debug] [2025-04-25T16:36:21.090Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/project/variables [none]
+[debug] [2025-04-25T16:36:21.249Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/openai/variables 200
+[debug] [2025-04-25T16:36:21.249Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/openai/variables {"variables":[{"name":"projects/fudi-verse-66v9pu/configs/openai/variables/key","updateTime":"2025-04-11T16:42:15.040954587Z"}]}
+[debug] [2025-04-25T16:36:21.249Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.249Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.250Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/openai/variables/key [none]
+[debug] [2025-04-25T16:36:21.362Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/project/variables 200
+[debug] [2025-04-25T16:36:21.362Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/project/variables {"variables":[{"name":"projects/fudi-verse-66v9pu/configs/project/variables/id","updateTime":"2025-04-25T04:17:48.656494928Z"}]}
+[debug] [2025-04-25T16:36:21.362Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.362Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:21.362Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/project/variables/id [none]
+[debug] [2025-04-25T16:36:21.384Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/openai/variables/key 200
+[debug] [2025-04-25T16:36:21.384Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/openai/variables/key {"name":"projects/fudi-verse-66v9pu/configs/openai/variables/key","updateTime":"2025-04-11T16:42:15.040954587Z","text":"sk-xxxxxxxxxxxxxxxx"}
+[debug] [2025-04-25T16:36:21.485Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/project/variables/id 200
+[debug] [2025-04-25T16:36:21.485Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/fudi-verse-66v9pu/configs/project/variables/id {"name":"projects/fudi-verse-66v9pu/configs/project/variables/id","updateTime":"2025-04-25T04:17:48.656494928Z","text":"fudi-verse-66v9pu"}
+[debug] [2025-04-25T16:36:21.486Z] Validating nodejs source
+[debug] [2025-04-25T16:36:22.545Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "lint": "echo 'Lint check passed'",
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "firebase-admin": "^12.6.0",
+    "firebase-functions": "^6.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.15.0",
+    "eslint-config-google": "^0.14.0",
+    "firebase-functions-test": "^3.1.0"
+  },
+  "private": true
+}
+[debug] [2025-04-25T16:36:22.545Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2025-04-25T16:36:22.547Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-04-25T16:36:22.556Z] Found firebase-functions binary at 'C:\Users\migue\fudigpt\fudigpt\functions\node_modules\.bin\firebase-functions'
+[info] Serving at port 8612
+
+[debug] [2025-04-25T16:36:23.172Z] Got response from /__/functions.yaml {"endpoints":{"syncPosterDataManual":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","labels":{},"callableTrigger":{},"entryPoint":"syncPosterDataManual"}},"specVersion":"v1alpha1","requiredAPIs":[],"extensions":{}}
+[info] i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:27.203Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:27.203Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:27.203Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/firebaseextensions.googleapis.com [none]
+[debug] [2025-04-25T16:36:27.203Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/firebaseextensions.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:27.652Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/firebaseextensions.googleapis.com 200
+[debug] [2025-04-25T16:36:27.652Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/firebaseextensions.googleapis.com [omitted]
+[info] +  extensions: required API firebaseextensions.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:27.653Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-04-25T16:36:27.653Z] > authorizing via signed-in user (fudiverse@gmail.com)
+[debug] [2025-04-25T16:36:27.653Z] [iam] checking project fudi-verse-66v9pu for permissions ["firebase.projects.get","firebaseextensions.instances.list"]
+[debug] [2025-04-25T16:36:27.653Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:27.653Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:27.653Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions [none]
+[debug] [2025-04-25T16:36:27.653Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:27.653Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2025-04-25T16:36:28.037Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions 200
+[debug] [2025-04-25T16:36:28.037Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2025-04-25T16:36:28.037Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:28.037Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:28.038Z] >>> [apiv2][query] GET https://firebaseextensions.googleapis.com/v1beta/projects/fudi-verse-66v9pu/instances pageSize=100&pageToken=
+[debug] [2025-04-25T16:36:28.577Z] <<< [apiv2][status] GET https://firebaseextensions.googleapis.com/v1beta/projects/fudi-verse-66v9pu/instances 200
+[debug] [2025-04-25T16:36:28.577Z] <<< [apiv2][body] GET https://firebaseextensions.googleapis.com/v1beta/projects/fudi-verse-66v9pu/instances {}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged C:\Users\migue\fudigpt\fudigpt\functions (75.06 KB) for uploading 
+[debug] [2025-04-25T16:36:28.623Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:28.623Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:28.623Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/fudi-verse-66v9pu/locations/-/functions [none]
+[debug] [2025-04-25T16:36:29.320Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/fudi-verse-66v9pu/locations/-/functions 200
+[debug] [2025-04-25T16:36:29.321Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/fudi-verse-66v9pu/locations/-/functions {}
+[debug] [2025-04-25T16:36:29.321Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.321Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.321Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2025-04-25T16:36:29.729Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/-/functions 200
+[debug] [2025-04-25T16:36:29.729Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/-/functions {"functions":[{"name":"projects/fudi-verse-66v9pu/locations/us-central1/functions/generateAIResponse","buildConfig":{"build":"projects/402078905805/locations/us-central1/builds/44d79f7e-c1e3-4f26-b644-5be5fddd937d","runtime":"nodejs20","entryPoint":"generateAIResponse","source":{"storageSource":{"bucket":"gcf-v2-sources-402078905805-us-central1","object":"generateAIResponse/function-source.zip","generation":"1745171548816510"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/fudi-verse-66v9pu/locations/us-central1/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-402078905805-us-central1","object":"generateAIResponse/function-source.zip","generation":"1745171548816510"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/fudi-verse-66v9pu/serviceAccounts/402078905805-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/fudi-verse-66v9pu/locations/us-central1/services/generateairesponse","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"fudi-verse-66v9pu\",\"storageBucket\":\"fudi-verse-66v9pu.firebasestorage.app\"}","GCLOUD_PROJECT":"fudi-verse-66v9pu","EVENTARC_CLOUD_EVENT_SOURCE":"projects/fudi-verse-66v9pu/locations/us-central1/services/generateAIResponse","FUNCTION_TARGET":"generateAIResponse","LOG_EXECUTION_ID":"true"},"maxInstanceCount":3,"ingressSettings":"ALLOW_ALL","uri":"https://generateairesponse-nnotj7epva-uc.a.run.app","serviceAccountEmail":"402078905805-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"generateairesponse-00001-ned","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2025-04-20T17:53:55.073521787Z","labels":{"deployment-tool":"cli-firebase","deployment-callable":"true","firebase-functions-hash":"6c83c2fe167b6518a157555c2ad8b2525fed5b74"},"environment":"GEN_2","url":"https://us-central1-fudi-verse-66v9pu.cloudfunctions.net/generateAIResponse","createTime":"2025-04-20T17:52:29.209448340Z","satisfiesPzi":true},{"name":"projects/fudi-verse-66v9pu/locations/us-central1/functions/getGastosInsights","buildConfig":{"build":"projects/402078905805/locations/us-central1/builds/edec2470-1e18-4a9a-8422-4788fd2da12d","runtime":"nodejs22","entryPoint":"getGastosInsights","source":{"storageSource":{"bucket":"gcf-v2-sources-402078905805-us-central1","object":"getGastosInsights/function-source.zip","generation":"1744389762800551"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/fudi-verse-66v9pu/locations/us-central1/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-402078905805-us-central1","object":"getGastosInsights/function-source.zip","generation":"1744389762800551"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/fudi-verse-66v9pu/serviceAccounts/402078905805-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/fudi-verse-66v9pu/locations/us-central1/services/getgastosinsights","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"fudi-verse-66v9pu\",\"storageBucket\":\"fudi-verse-66v9pu.firebasestorage.app\"}","GCLOUD_PROJECT":"fudi-verse-66v9pu","EVENTARC_CLOUD_EVENT_SOURCE":"projects/fudi-verse-66v9pu/locations/us-central1/services/getGastosInsights","FUNCTION_TARGET":"getGastosInsights","LOG_EXECUTION_ID":"true"},"maxInstanceCount":3,"ingressSettings":"ALLOW_ALL","uri":"https://getgastosinsights-nnotj7epva-uc.a.run.app","serviceAccountEmail":"402078905805-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"getgastosinsights-00003-zul","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2025-04-11T16:43:46.831189348Z","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"0c48ac940f88bfc96a8fd34cc9eb0b43a71efb99"},"environment":"GEN_2","url":"https://us-central1-fudi-verse-66v9pu.cloudfunctions.net/getGastosInsights","createTime":"2025-04-10T16:59:10.375237391Z","satisfiesPzi":true}]}
+[info] i  functions: ensuring required API run.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:29.732Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.732Z] Checked if tokens are valid: true, expires at: 1745600013782
+[info] i  functions: ensuring required API eventarc.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:29.734Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.734Z] Checked if tokens are valid: true, expires at: 1745600013782
+[info] i  functions: ensuring required API pubsub.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:29.734Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.734Z] Checked if tokens are valid: true, expires at: 1745600013782
+[info] i  functions: ensuring required API storage.googleapis.com is enabled... 
+[debug] [2025-04-25T16:36:29.735Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.735Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:29.735Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/run.googleapis.com [none]
+[debug] [2025-04-25T16:36:29.735Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/run.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:29.735Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/eventarc.googleapis.com [none]
+[debug] [2025-04-25T16:36:29.735Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/eventarc.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:29.737Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/pubsub.googleapis.com [none]
+[debug] [2025-04-25T16:36:29.737Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/pubsub.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:29.739Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/storage.googleapis.com [none]
+[debug] [2025-04-25T16:36:29.739Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/storage.googleapis.com x-goog-quota-user=projects/fudi-verse-66v9pu
+[debug] [2025-04-25T16:36:29.907Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/run.googleapis.com 200
+[debug] [2025-04-25T16:36:29.907Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/run.googleapis.com [omitted]
+[info] +  functions: required API run.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:30.171Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/pubsub.googleapis.com 200
+[debug] [2025-04-25T16:36:30.171Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/pubsub.googleapis.com [omitted]
+[info] +  functions: required API pubsub.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:30.176Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/eventarc.googleapis.com 200
+[debug] [2025-04-25T16:36:30.176Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/eventarc.googleapis.com [omitted]
+[info] +  functions: required API eventarc.googleapis.com is enabled 
+[debug] [2025-04-25T16:36:30.177Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/storage.googleapis.com 200
+[debug] [2025-04-25T16:36:30.177Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/fudi-verse-66v9pu/services/storage.googleapis.com [omitted]
+[info] +  functions: required API storage.googleapis.com is enabled 
+[info] i  functions: generating the service identity for pubsub.googleapis.com... 
+[debug] [2025-04-25T16:36:30.178Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.178Z] Checked if tokens are valid: true, expires at: 1745600013782
+[info] i  functions: generating the service identity for eventarc.googleapis.com... 
+[debug] [2025-04-25T16:36:30.179Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.179Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.179Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/402078905805/services/pubsub.googleapis.com:generateServiceIdentity [none]
+[debug] [2025-04-25T16:36:30.179Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/402078905805/services/eventarc.googleapis.com:generateServiceIdentity [none]
+[debug] [2025-04-25T16:36:30.458Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/402078905805/services/eventarc.googleapis.com:generateServiceIdentity 200
+[debug] [2025-04-25T16:36:30.458Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/402078905805/services/eventarc.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-402078905805@gcp-sa-eventarc.iam.gserviceaccount.com","uniqueId":"109122057890311702448"}}
+[debug] [2025-04-25T16:36:30.487Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/402078905805/services/pubsub.googleapis.com:generateServiceIdentity 200
+[debug] [2025-04-25T16:36:30.487Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/402078905805/services/pubsub.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-402078905805@gcp-sa-pubsub.iam.gserviceaccount.com","uniqueId":"110016863285674638177"}}
+[debug] [2025-04-25T16:36:30.489Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.489Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.489Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu [none]
+[debug] [2025-04-25T16:36:30.612Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu 200
+[debug] [2025-04-25T16:36:30.612Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/fudi-verse-66v9pu {"projectNumber":"402078905805","projectId":"fudi-verse-66v9pu","lifecycleState":"ACTIVE","name":"FudiVerse","labels":{"firebase":"enabled"},"createTime":"2025-03-31T16:35:14.983447Z"}
+[debug] [2025-04-25T16:36:30.613Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.613Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.613Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/fudi-verse-66v9pu/billingInfo [none]
+[debug] [2025-04-25T16:36:30.958Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/fudi-verse-66v9pu/billingInfo 200
+[debug] [2025-04-25T16:36:30.959Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/fudi-verse-66v9pu/billingInfo {"name":"projects/fudi-verse-66v9pu/billingInfo","projectId":"fudi-verse-66v9pu","billingAccountName":"billingAccounts/012A8A-6AD8ED-D42CB6","billingEnabled":true}
+[debug] [2025-04-25T16:36:30.960Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.960Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:30.960Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2025-04-25T16:36:31.221Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions:generateUploadUrl 200
+[debug] [2025-04-25T16:36:31.221Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com/8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip?GoogleAccessId=service-402078905805@gcf-admin-robot.iam.gserviceaccount.com&Expires=1745600793&Signature=pLx4zb%2BHLNtCAwT8seoQc1DYa6l1Snmspc73fQMo1XffNNtvZVduJA6zKJuae3B5VqeI9M43OEVEkUO53zhDjy7RIiMhjSXn966YVlc7mIRVDaBmj0QxpPOdIrb0Vi%2BHvA94GxB3W5c8nboaQScm6ZXgaB7XO8nvFxRz3L91LXV5g0hFNRQOL7esexiipGe9xymejNqfB9i%2Fyi4eLA6CVrkDi%2BFHvhEeuCZGEcLWQUwZnazwRmlkwuKW0fk%2BAonwpxVdizI%2B4ROpRxaG3HpqutSafwIGbmPY%2Fv7MilzctU%2FfhnL3MIKiKe2edlt1ZmQdvowMfluD8zBvfTVacpE83Q%3D%3D","storageSource":{"bucket":"gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com","object":"8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip"}}
+[debug] [2025-04-25T16:36:31.222Z] >>> [apiv2][query] PUT https://storage.googleapis.com/gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com/8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip GoogleAccessId=service-402078905805%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1745600793&Signature=pLx4zb%2BHLNtCAwT8seoQc1DYa6l1Snmspc73fQMo1XffNNtvZVduJA6zKJuae3B5VqeI9M43OEVEkUO53zhDjy7RIiMhjSXn966YVlc7mIRVDaBmj0QxpPOdIrb0Vi%2BHvA94GxB3W5c8nboaQScm6ZXgaB7XO8nvFxRz3L91LXV5g0hFNRQOL7esexiipGe9xymejNqfB9i%2Fyi4eLA6CVrkDi%2BFHvhEeuCZGEcLWQUwZnazwRmlkwuKW0fk%2BAonwpxVdizI%2B4ROpRxaG3HpqutSafwIGbmPY%2Fv7MilzctU%2FfhnL3MIKiKe2edlt1ZmQdvowMfluD8zBvfTVacpE83Q%3D%3D
+[debug] [2025-04-25T16:36:31.222Z] >>> [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com/8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip [stream]
+[debug] [2025-04-25T16:36:31.702Z] <<< [apiv2][status] PUT https://storage.googleapis.com/gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com/8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip 200
+[debug] [2025-04-25T16:36:31.702Z] <<< [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com/8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip [omitted]
+[info] +  functions: functions folder uploaded successfully 
+[info] i  functions: creating Node.js 20 (2nd Gen) function syncPosterDataManual(us-central1)... 
+[debug] [2025-04-25T16:36:31.707Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:31.707Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:31.708Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions functionId=syncPosterDataManual
+[debug] [2025-04-25T16:36:31.708Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions {"name":"projects/fudi-verse-66v9pu/locations/us-central1/functions/syncPosterDataManual","buildConfig":{"runtime":"nodejs20","entryPoint":"syncPosterDataManual","source":{"storageSource":{"bucket":"gcf-v2-uploads-402078905805.us-central1.cloudfunctions.appspot.com","object":"8fbd5bf8-98ad-49a2-8f33-64bd1569c117.zip"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""}},"serviceConfig":{"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"fudi-verse-66v9pu\",\"storageBucket\":\"fudi-verse-66v9pu.firebasestorage.app\"}","GCLOUD_PROJECT":"fudi-verse-66v9pu","EVENTARC_CLOUD_EVENT_SOURCE":"projects/fudi-verse-66v9pu/locations/us-central1/services/syncPosterDataManual","FUNCTION_TARGET":"syncPosterDataManual","LOG_EXECUTION_ID":"true"},"ingressSettings":null,"timeoutSeconds":null,"serviceAccountEmail":null,"availableMemory":"256Mi","minInstanceCount":null,"maxInstanceCount":null,"maxInstanceRequestConcurrency":80,"availableCpu":"1","vpcConnector":null,"vpcConnectorEgressSettings":null},"labels":{"deployment-tool":"cli-firebase","deployment-callable":"true","firebase-functions-hash":"796682d9d1078c5d6ff1f98503849862c3d4291a"}}
+[debug] [2025-04-25T16:36:32.665Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions 404
+[debug] [2025-04-25T16:36:32.665Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions {"error":{"code":404,"message":"Service account projects/-/serviceAccounts/402078905805-compute@developer.gserviceaccount.com was not found.","status":"NOT_FOUND"}}
+[warn] !  functions: Request to https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions?functionId=syncPosterDataManual had HTTP Error: 404, Service account projects/-/serviceAccounts/402078905805-compute@developer.gserviceaccount.com was not found. 
+[warn] !  functions:  failed to create function projects/fudi-verse-66v9pu/locations/us-central1/functions/syncPosterDataManual 
+[error] Failed to create function projects/fudi-verse-66v9pu/locations/us-central1/functions/syncPosterDataManual
+[debug] [2025-04-25T16:36:32.675Z] Total Function Deployment time: 964
+[debug] [2025-04-25T16:36:32.675Z] 1 Functions Deployed
+[debug] [2025-04-25T16:36:32.675Z] 1 Functions Errored
+[debug] [2025-04-25T16:36:32.675Z] 0 Function Deployments Aborted
+[debug] [2025-04-25T16:36:32.675Z] Average Function Deployment time: 964
+[info] 
+[info] Functions deploy had errors with the following functions:
+	syncPosterDataManual(us-central1)
+[debug] [2025-04-25T16:36:32.903Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:32.903Z] Checked if tokens are valid: true, expires at: 1745600013782
+[debug] [2025-04-25T16:36:32.903Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/fudi-verse-66v9pu/locations/us-central1/repositories/gcf-artifacts [none]
+[debug] [2025-04-25T16:36:33.298Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/fudi-verse-66v9pu/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2025-04-25T16:36:33.298Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/fudi-verse-66v9pu/locations/us-central1/repositories/gcf-artifacts {"name":"projects/fudi-verse-66v9pu/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2025-04-08T02:04:50.987463Z","updateTime":"2025-04-21T19:49:54.230417Z","mode":"STANDARD_REPOSITORY","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","action":"DELETE","condition":{"tagState":"ANY","olderThan":"86400s"}}},"vulnerabilityScanningConfig":{"lastEnableTime":"2025-04-08T02:04:42.519049667Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true,"registryUri":"us-central1-docker.pkg.dev/fudi-verse-66v9pu/gcf-artifacts"}
+[debug] [2025-04-25T16:36:33.298Z] Functions deploy failed.
+[debug] [2025-04-25T16:36:33.298Z] {
+  "endpoint": {
+    "id": "syncPosterDataManual",
+    "project": "fudi-verse-66v9pu",
+    "region": "us-central1",
+    "entryPoint": "syncPosterDataManual",
+    "platform": "gcfv2",
+    "runtime": "nodejs20",
+    "callableTrigger": {},
+    "labels": {
+      "deployment-tool": "cli-firebase"
+    },
+    "serviceAccount": null,
+    "ingressSettings": null,
+    "availableMemoryMb": null,
+    "timeoutSeconds": null,
+    "maxInstances": null,
+    "minInstances": null,
+    "concurrency": 80,
+    "vpc": null,
+    "environmentVariables": {
+      "FIREBASE_CONFIG": "{\"projectId\":\"fudi-verse-66v9pu\",\"storageBucket\":\"fudi-verse-66v9pu.firebasestorage.app\"}",
+      "GCLOUD_PROJECT": "fudi-verse-66v9pu",
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/fudi-verse-66v9pu/locations/us-central1/services/syncPosterDataManual"
+    },
+    "codebase": "default",
+    "cpu": 1,
+    "targetedByOnly": true,
+    "hash": "796682d9d1078c5d6ff1f98503849862c3d4291a"
+  },
+  "op": "create",
+  "original": {
+    "name": "FirebaseError",
+    "children": [],
+    "context": {
+      "function": "projects/fudi-verse-66v9pu/locations/us-central1/functions/syncPosterDataManual"
+    },
+    "exit": 1,
+    "message": "Failed to create function projects/fudi-verse-66v9pu/locations/us-central1/functions/syncPosterDataManual",
+    "original": {
+      "name": "FirebaseError",
+      "children": [],
+      "context": {
+        "body": {
+          "error": {
+            "code": 404,
+            "message": "Service account projects/-/serviceAccounts/402078905805-compute@developer.gserviceaccount.com was not found.",
+            "status": "NOT_FOUND"
+          }
+        },
+        "response": {
+          "statusCode": 404
+        }
+      },
+      "exit": 1,
+      "message": "Request to https://cloudfunctions.googleapis.com/v2/projects/fudi-verse-66v9pu/locations/us-central1/functions?functionId=syncPosterDataManual had HTTP Error: 404, Service account projects/-/serviceAccounts/402078905805-compute@developer.gserviceaccount.com was not found.",
+      "status": 404
+    },
+    "status": 404,
+    "code": 404
+  }
+}
+[debug] [2025-04-25T16:36:33.391Z] Error: Failed to create function syncPosterDataManual in region us-central1
+    at C:\Users\migue\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:294:27
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Fabricator.createV2Function (C:\Users\migue\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:278:30)
+    at async Fabricator.createEndpoint (C:\Users\migue\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:137:13)
+    at async handle (C:\Users\migue\AppData\Roaming\npm\node_modules\firebase-tools\lib\deploy\functions\release\fabricator.js:89:17)
+[error] 
+[error] Error: There was an error deploying functions

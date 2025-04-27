@@ -19,6 +19,19 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+// Verificación de variables de entorno - Solo para desarrollo
+console.log("Variables de entorno cargadas:");
+console.log("Firebase API Key:", process.env.REACT_APP_FIREBASE_API_KEY ? "✓ Configurada" : "✗ Falta");
+console.log("Firebase Auth Domain:", process.env.REACT_APP_FIREBASE_AUTH_DOMAIN ? "✓ Configurada" : "✗ Falta");
+console.log("Firebase Project ID:", process.env.REACT_APP_FIREBASE_PROJECT_ID ? "✓ Configurada" : "✗ Falta");
+console.log("Firebase Storage Bucket:", process.env.REACT_APP_FIREBASE_STORAGE_BUCKET ? "✓ Configurada" : "✗ Falta");
+console.log("Firebase Messaging Sender ID:", process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID ? "✓ Configurada" : "✗ Falta");
+console.log("Firebase App ID:", process.env.REACT_APP_FIREBASE_APP_ID ? "✓ Configurada" : "✗ Falta");
+console.log("Firebase Measurement ID:", process.env.REACT_APP_FIREBASE_MEASUREMENT_ID ? "✓ Configurada" : "✗ Falta");
+console.log("Poster Client ID:", process.env.REACT_APP_POSTER_CLIENT_ID ? "✓ Configurada" : "✗ Falta");
+console.log("Poster Client Secret:", process.env.REACT_APP_POSTER_CLIENT_SECRET ? "✓ Configurada" : "✗ Falta");
+console.log("Poster Redirect URI:", process.env.REACT_APP_POSTER_REDIRECT_URI ? "✓ Configurada" : "✗ Falta");
+
 // Componente para redireccionar si ya está autenticado
 const RedirectIfAuthenticated = ({ children }) => {
   const { currentUser } = useAuth();
