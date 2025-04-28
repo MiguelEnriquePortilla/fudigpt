@@ -1,20 +1,25 @@
 // src/services/poster/posterAuth.js
-import { auth, db } from '../../firebase';
-import { doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import axios from 'axios';
 import { 
-  POSTER_OAUTH_URL, 
-  POSTER_CLIENT_ID, 
-  POSTER_CLIENT_SECRET, 
+  POSTER_AUTH_URL, 
+  POSTER_API_URL,
+  POSTER_APP_ID, 
+  POSTER_APP_SECRET, 
   POSTER_REDIRECT_URI,
-  COLLECTION_TOKENS
+  COLLECTION_USERS,
+  COLLECTION_INTEGRATION,
+  COLLECTION_POSTER,
+  getPosterIntegrationPath
 } from './constants';
+import { handleApiError, handleFirestoreError, logErrorToFirestore } from '../errorHandler';
 
 /**
  * Inicia el flujo de OAuth con Poster
  */
-export function initiateOAuthFlow() {
-  const authUrl = `${POSTER_OAUTH_URL}?application_id=${POSTER_CLIENT_ID}&redirect_uri=${encodeURIComponent(POSTER_REDIRECT_URI)}&response_type=code`;
+export function initiatePosterAuth() {
+  const authUrl = `${POSTER_AUTH_URL}?application_id=${POSTER_APP_ID}&redirect_uri=${encodeURIComponent(POSTER_REDIRECT_URI)}&response_type=code`;
   window.location.href = authUrl;
 }
 
@@ -23,7 +28,7 @@ export function initiateOAuthFlow() {
  * @param {string} code - Código de autorización
  * @param {string} userId - ID del usuario
  */
-export async function handleAuthCallback(code, userId) {
+export async function handlePosterAuthCallback(code, userId) {
   try {
     const tokens = await exchangeCodeForTokens(code);
     await storeTokens(tokens, userId);
@@ -32,12 +37,7 @@ export async function handleAuthCallback(code, userId) {
       message: 'Conexión con Poster establecida correctamente'
     };
   } catch (error) {
-    console.error('Error en autorización de Poster:', error);
-    return {
-      success: false,
-      message: 'Error al conectar con Poster',
-      error: error.message
-    };
+    return handleApiError(error, 'posterAuth', 'handlePosterAuthCallback', { userId });
   }
 }
 
@@ -47,12 +47,11 @@ export async function handleAuthCallback(code, userId) {
  */
 async function exchangeCodeForTokens(code) {
   try {
-    const response = await axios.post('https://joinposter.com/api/v2/auth/token', {
-      grant_type: 'authorization_code',
-      client_id: POSTER_CLIENT_ID,
-      client_secret: POSTER_CLIENT_SECRET,
-      redirect_uri: POSTER_REDIRECT_URI,
-      code
+    const response = await axios.post(`${POSTER_API_URL}/auth/token`, {
+      application_id: POSTER_APP_ID,
+      application_secret: POSTER_APP_SECRET,
+      code,
+      redirect_uri: POSTER_REDIRECT_URI
     });
     
     return {
@@ -62,8 +61,7 @@ async function exchangeCodeForTokens(code) {
       accountId: response.data.account_id
     };
   } catch (error) {
-    console.error('Error intercambiando código por tokens:', error);
-    throw new Error('No se pudo obtener tokens de acceso. Por favor intenta nuevamente.');
+    throw handleApiError(error, 'posterAuth', 'exchangeCodeForTokens');
   }
 }
 
@@ -74,7 +72,8 @@ async function exchangeCodeForTokens(code) {
  */
 async function storeTokens(tokens, userId) {
   try {
-    await setDoc(doc(db, 'users', userId, 'integration', 'poster'), {
+    const docPath = getPosterIntegrationPath(userId);
+    await setDoc(doc(db, docPath), {
       access_token: tokens.accessToken,
       refresh_token: tokens.refreshToken,
       expires_at: new Date(tokens.expiresAt).toISOString(),
@@ -85,8 +84,9 @@ async function storeTokens(tokens, userId) {
     });
     return true;
   } catch (error) {
-    console.error('Error guardando tokens:', error);
-    throw new Error('No se pudieron almacenar los tokens. Por favor intenta nuevamente.');
+    // Registrar error en Firestore para monitoreo
+    await logErrorToFirestore(db, userId, handleFirestoreError(error, 'posterAuth', 'storeTokens', { userId }));
+    throw handleFirestoreError(error, 'posterAuth', 'storeTokens', { userId });
   }
 }
 
@@ -94,9 +94,10 @@ async function storeTokens(tokens, userId) {
  * Verifica el estado de la conexión con Poster
  * @param {string} userId - ID del usuario
  */
-export async function checkConnection(userId) {
+export async function checkPosterConnection(userId) {
   try {
-    const posterDoc = await getDoc(doc(db, 'users', userId, 'integration', 'poster'));
+    const docPath = getPosterIntegrationPath(userId);
+    const posterDoc = await getDoc(doc(db, docPath));
 
     if (!posterDoc.exists()) {
       return {
@@ -130,14 +131,11 @@ export async function checkConnection(userId) {
     return {
       connected: posterData.connected === true,
       lastSync: posterData.last_sync ? new Date(posterData.last_sync.seconds * 1000) : null,
-      syncInProgress: posterData.sync_in_progress === true
+      syncInProgress: posterData.sync_in_progress === true,
+      syncCounts: posterData.sync_counts || {}
     };
   } catch (error) {
-    console.error('Error comprobando conexión con Poster:', error);
-    return {
-      connected: false,
-      error: error.message
-    };
+    return handleFirestoreError(error, 'posterAuth', 'checkPosterConnection', { userId });
   }
 }
 
@@ -148,10 +146,10 @@ export async function checkConnection(userId) {
  */
 async function refreshTokens(refreshToken, userId) {
   try {
-    const response = await axios.post('https://joinposter.com/api/v2/auth/refresh', {
+    const response = await axios.post(`${POSTER_API_URL}/auth/refresh`, {
       grant_type: 'refresh_token',
-      client_id: POSTER_CLIENT_ID,
-      client_secret: POSTER_CLIENT_SECRET,
+      application_id: POSTER_APP_ID,
+      application_secret: POSTER_APP_SECRET,
       refresh_token: refreshToken
     });
     
@@ -162,12 +160,12 @@ async function refreshTokens(refreshToken, userId) {
       updated_at: new Date()
     };
     
-    await updateDoc(doc(db, 'users', userId, 'integration', 'poster'), tokens);
+    const docPath = getPosterIntegrationPath(userId);
+    await updateDoc(doc(db, docPath), tokens);
     
     return true;
   } catch (error) {
-    console.error('Error refrescando tokens:', error);
-    throw error;
+    throw handleApiError(error, 'posterAuth', 'refreshTokens', { userId });
   }
 }
 
@@ -175,9 +173,10 @@ async function refreshTokens(refreshToken, userId) {
  * Obtiene los tokens de acceso para un usuario
  * @param {string} userId - ID del usuario
  */
-export async function getTokens(userId) {
+export async function getPosterTokens(userId) {
   try {
-    const posterDoc = await getDoc(doc(db, 'users', userId, 'integration', 'poster'));
+    const docPath = getPosterIntegrationPath(userId);
+    const posterDoc = await getDoc(doc(db, docPath));
     
     if (!posterDoc.exists()) {
       throw new Error('No hay tokens almacenados');
@@ -189,7 +188,7 @@ export async function getTokens(userId) {
     if (new Date(data.expires_at) < new Date()) {
       await refreshTokens(data.refresh_token, userId);
       // Llamada recursiva para obtener tokens actualizados
-      return getTokens(userId);
+      return getPosterTokens(userId);
     }
     
     return {
@@ -198,8 +197,7 @@ export async function getTokens(userId) {
       expiresAt: new Date(data.expires_at)
     };
   } catch (error) {
-    console.error('Error obteniendo tokens:', error);
-    throw new Error('No se pudieron obtener los tokens. Por favor reconecta tu cuenta de Poster.');
+    throw handleApiError(error, 'posterAuth', 'getPosterTokens', { userId });
   }
 }
 
@@ -207,18 +205,19 @@ export async function getTokens(userId) {
  * Revoca los tokens y elimina la conexión con Poster
  * @param {string} userId - ID del usuario
  */
-export async function revokeAccess(userId) {
+export async function revokePosterAccess(userId) {
   try {
-    const posterDoc = await getDoc(doc(db, 'users', userId, 'integration', 'poster'));
+    const docPath = getPosterIntegrationPath(userId);
+    const posterDoc = await getDoc(doc(db, docPath));
     
     if (posterDoc.exists()) {
       const data = posterDoc.data();
       
       // Intentar revocar en Poster
       try {
-        await axios.post('https://joinposter.com/api/v2/auth/revoke', {
-          client_id: POSTER_CLIENT_ID,
-          client_secret: POSTER_CLIENT_SECRET,
+        await axios.post(`${POSTER_API_URL}/auth/revoke`, {
+          application_id: POSTER_APP_ID,
+          application_secret: POSTER_APP_SECRET,
           token: data.access_token
         });
       } catch (error) {
@@ -227,7 +226,7 @@ export async function revokeAccess(userId) {
       }
       
       // Marcar como desconectado pero mantener el registro
-      await updateDoc(doc(db, 'users', userId, 'integration', 'poster'), {
+      await updateDoc(doc(db, docPath), {
         connected: false,
         disconnected_at: new Date()
       });
@@ -238,11 +237,13 @@ export async function revokeAccess(userId) {
       message: 'Desconexión de Poster completada'
     };
   } catch (error) {
-    console.error('Error revocando acceso:', error);
-    return {
-      success: false,
-      message: 'Error al desconectar la cuenta de Poster',
-      error: error.message
-    };
+    return handleApiError(error, 'posterAuth', 'revokePosterAccess', { userId });
   }
 }
+
+// Compatibilidad con código existente
+export const checkConnection = checkPosterConnection;
+export const getTokens = getPosterTokens;
+export const initiateAuth = initiatePosterAuth;
+export const handleAuthCallback = handlePosterAuthCallback;
+export const revokeAccess = revokePosterAccess;
