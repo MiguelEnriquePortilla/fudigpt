@@ -4,11 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import RefreshDataButton from '../components/RefreshDataButton';
 
-/**
- * Componente principal de la página de chat
- * Proporciona la interfaz para conversar con FudiGPT y 
- * actualizar datos de Poster según sea necesario
- */
 const ChatPage = () => {
   const navigate = useNavigate();
   const { logout, currentUser } = useAuth();
@@ -144,7 +139,7 @@ const ChatPage = () => {
         const freshDataMessage = {
           id: messages.length + 2,
           sender: 'bot',
-          content: `Parece que estás preguntando sobre datos recientes. Para darte la información más actualizada, te recomendaría refrescar los datos de Poster usando el botón "Refrescar datos" en la barra lateral. Esto asegurará que estoy analizando la información más reciente de tu restaurante.`,
+          content: `Parece que estás preguntando sobre datos recientes. Para darte la información más actualizada, te recomendaría refrescar los datos de Poster usando el botón "Refrescar datos". Esto asegurará que estoy analizando la información más reciente de tu restaurante.`,
           timestamp: new Date()
         };
         
@@ -188,10 +183,18 @@ const ChatPage = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 text-gray-800">
-      {/* Barra lateral - Siempre visible en desktop, toggle en móvil */}
-      <div className={`w-64 bg-white flex flex-col h-full fixed md:sticky top-0 inset-y-0 left-0 z-30 transform transition-transform duration-300 ease-in-out ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-      }`}>
+      {/* Botón Hamburguesa para móviles */}
+      <button 
+        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white text-gray-800 rounded-lg border border-gray-300 flex items-center justify-center"
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+      >
+        {sidebarOpen ? '✕' : '☰'}
+      </button>
+
+      {/* Sidebar */}
+      <div className={"w-64 bg-white flex flex-col border-r border-gray-200 md:relative fixed inset-y-0 left-0 transform " + 
+           (sidebarOpen ? 'translate-x-0' : '-translate-x-full') + 
+           " md:translate-x-0 transition-transform duration-300 ease-in-out z-40"}>
         <div className="p-4 border-b border-gray-200">
           <h1 className="text-xl font-bold text-gray-800">FudiGPT</h1>
         </div>
@@ -204,7 +207,7 @@ const ChatPage = () => {
           <span className="mr-2">+</span> Nueva conversación
         </button>
         
-        {/* Botón de refrescar datos - Solo en la barra lateral */}
+        {/* Botón de refrescar datos */}
         <div className="px-4 pb-2">
           <RefreshDataButton onSyncComplete={handleSyncComplete} />
         </div>
@@ -216,9 +219,8 @@ const ChatPage = () => {
             <button
               key={conversation.id}
               onClick={() => handleConversationSelect(conversation.id)}
-              className={`w-full px-4 py-2 text-left hover:bg-gray-100 ${
-                activeConversation === conversation.id ? 'bg-gray-100' : ''
-              }`}
+              className={"w-full px-4 py-2 text-left hover:bg-gray-100 " + 
+                        (activeConversation === conversation.id ? 'bg-gray-100' : '')}
             >
               <div className="truncate font-medium">{conversation.title}</div>
               <div className="text-xs text-gray-400">{conversation.date.toLocaleDateString()}</div>
@@ -226,117 +228,100 @@ const ChatPage = () => {
           ))}
         </div>
         
-        {/* Información de usuario y botón de cerrar sesión - Movidos al fondo */}
-        <div className="mt-auto p-4 border-t border-gray-200">
-          <div className="flex items-center mb-2">
-            <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
-              <span className="text-white font-bold">{currentUser?.email?.charAt(0).toUpperCase() || 'U'}</span>
-            </div>
-            <div className="flex-1 truncate">
-              <div>Mi Restaurante</div>
-              <div className="text-xs text-gray-500">{currentUser?.email}</div>
-            </div>
+        {/* Información de usuario */}
+        <div className="p-4 border-t border-gray-200 flex items-center">
+          <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center mr-3">
+            <span className="text-white font-bold">{currentUser?.email?.charAt(0).toUpperCase() || 'U'}</span>
           </div>
-          <button
-            onClick={handleLogout}
-            className="w-full mt-2 py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-lg text-sm transition-colors text-left"
-          >
-            Cerrar Sesión
-          </button>
+          <div className="flex-1">
+            <div className="truncate">Mi Restaurante</div>
+            <button
+              onClick={handleLogout}
+              className="text-xs text-gray-400 hover:text-green-500"
+            >
+              Cerrar Sesión
+            </button>
+          </div>
         </div>
       </div>
       
-      {/* Botón hamburguesa para móviles */}
-      <button 
-        className="md:hidden fixed top-4 left-4 z-50 w-10 h-10 bg-white rounded-lg border border-gray-300 flex items-center justify-center shadow-sm"
-        onClick={() => setSidebarOpen(!sidebarOpen)}
-      >
-        {sidebarOpen ? '✕' : '☰'}
-      </button>
-      
-      {/* Overlay para cerrar el sidebar en móvil */}
+      {/* Overlay para cerrar el sidebar */}
       {sidebarOpen && (
         <div 
-          className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-20"
+          className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-30"
           onClick={() => setSidebarOpen(false)}
         ></div>
       )}
       
-      {/* Área principal de chat */}
-      <div className="flex-1 flex flex-col h-full">
-        {/* Header del chat */}
-        <header className="py-3 px-6 border-b border-gray-200 flex justify-between items-center bg-white">
+      {/* Main content */}
+      <div className="flex-1 flex flex-col">
+        {/* Chat header */}
+        <header className="py-3 px-6 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-lg font-semibold ml-10 md:ml-0">
             {activeConversation === 'new' ? 'Nueva conversación' : conversations.find(c => c.id === activeConversation)?.title}
           </h2>
         </header>
         
-        {/* Área de mensajes */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-gray-50">
+        {/* Chat messages */}
+        <div className="flex-1 overflow-y-auto p-6">
           {messages.length === 1 && (
             <div className="flex flex-col items-center justify-center h-full">
-              <div className="mb-6 w-24 h-24">
+              <div className="mb-8 w-32 h-32">
                 <img
                   src="/images/fudigpt-logo.png"
                   alt="Fudi Bot"
                   className="w-full h-full object-contain"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"%3E%3Crect width="128" height="128" fill="%23152238"%3E%3C/rect%3E%3Crect x="32" y="32" width="64" height="40" fill="%2350E6FF" rx="5"%3E%3C/rect%3E%3Crect x="40" y="80" width="48" height="24" fill="%2350E6FF" rx="3"%3E%3C/rect%3E%3Crect x="45" y="42" width="10" height="10" fill="%23152238"%3E%3C/rect%3E%3Crect x="73" y="42" width="10" height="10" fill="%23152238"%3E%3C/rect%3E%3Cpath d="M 45 65 Q 64 75, 83 65" stroke="%23152238" stroke-width="3" fill="none"%3E%3C/path%3E%3Ctext x="64" y="93" font-size="12" text-anchor="middle" font-family="sans-serif" fill="%23FF3E89"%3Efudi%3C/text%3E%3C/svg%3E';
-                  }}
                 />
               </div>
               <h2 className="text-2xl font-bold text-gray-800 mb-2">FudiGPT</h2>
-              <p className="text-gray-600 text-center max-w-md mb-6">
+              <p className="text-gray-600 text-center max-w-md mb-8">
                 Tu asistente virtual para gestión de restaurantes. Pregúntame sobre ventas, inventario, costos o cualquier aspecto de tu negocio.
               </p>
+              
+              {/* Botón de refrescar datos en la vista inicial */}
+              <div className="w-full max-w-md">
+                <RefreshDataButton onSyncComplete={handleSyncComplete} />
+              </div>
             </div>
           )}
           
           {messages.length > 0 && messages.length !== 1 && (
-            <div className="space-y-6 max-w-3xl mx-auto">
+            <div className="space-y-6">
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={"flex " + (message.sender === 'user' ? 'justify-end' : 'justify-start')}
                 >
                   {message.sender === 'bot' && (
-                    <div className="w-8 h-8 rounded-full mr-3 flex-shrink-0 self-start mt-1">
+                    <div className="w-8 h-8 rounded-full mr-3 flex-shrink-0 self-end">
                       <img
                         src="/images/fudigpt-face.png"
                         alt="Fudi"
                         className="w-full h-full rounded-full"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Crect width="40" height="40" fill="%2350E6FF" rx="20"%3E%3C/rect%3E%3Ctext x="20" y="25" font-size="16" text-anchor="middle" font-family="sans-serif" fill="%23FFFFFF"%3EF%3C/text%3E%3C/svg%3E';
-                        }}
                       />
                     </div>
                   )}
                   
                   <div
-                    className={`max-w-xs sm:max-w-md md:max-w-lg px-4 py-3 rounded-lg ${
-                      message.sender === 'user' 
-                        ? 'bg-blue-500 text-white' 
-                        : message.isSystem
-                          ? 'bg-blue-50 text-blue-800 border border-blue-100'
-                          : 'bg-white text-gray-800 border border-gray-100 shadow-sm'
-                    }`}
+                    className={"max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg px-4 py-3 rounded-lg " + 
+                              (message.sender === 'user' 
+                                ? 'bg-gray-100 text-gray-800' 
+                                : message.isSystem
+                                  ? 'bg-blue-50 text-blue-800'
+                                  : 'bg-white border border-gray-200 text-gray-800')}
                   >
-                    <div className="whitespace-pre-line">
+                    <div>
                       {message.content}
                     </div>
                     <div
-                      className={`text-xs mt-1 ${
-                        message.sender === 'user' ? 'text-blue-200' : 'text-gray-400'
-                      }`}
+                      className={"text-xs mt-1 text-gray-400"}
                     >
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </div>
                   </div>
                   
                   {message.sender === 'user' && (
-                    <div className="w-8 h-8 rounded-full bg-green-500 ml-3 flex-shrink-0 self-start mt-1 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-green-500 ml-3 flex-shrink-0 self-end flex items-center justify-center">
                       <span className="text-white font-medium">
                         {currentUser?.email?.charAt(0).toUpperCase() || 'U'}
                       </span>
@@ -347,18 +332,14 @@ const ChatPage = () => {
               
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="w-8 h-8 rounded-full mr-3 flex-shrink-0 self-start mt-1">
+                  <div className="w-8 h-8 rounded-full mr-3 flex-shrink-0">
                     <img
                       src="/images/fudigpt-face.png"
                       alt="Fudi"
                       className="w-full h-full rounded-full"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Crect width="40" height="40" fill="%2350E6FF" rx="20"%3E%3C/rect%3E%3Ctext x="20" y="25" font-size="16" text-anchor="middle" font-family="sans-serif" fill="%23FFFFFF"%3EF%3C/text%3E%3C/svg%3E';
-                      }}
                     />
                   </div>
-                  <div className="bg-white text-gray-800 border border-gray-100 rounded-lg px-4 py-3 shadow-sm">
+                  <div className="bg-white border border-gray-200 text-gray-800 rounded-lg px-4 py-3">
                     <div className="flex space-x-2">
                       <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
                       <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
@@ -372,29 +353,26 @@ const ChatPage = () => {
           )}
         </div>
         
-        {/* Entrada de mensaje */}
-        <div className="p-4 border-t border-gray-200 bg-white">
-          <form onSubmit={handleSendMessage} className="max-w-3xl mx-auto flex space-x-2">
+        {/* Message input */}
+        <div className="px-6 py-4 border-t border-gray-200">
+          <form onSubmit={handleSendMessage} className="flex space-x-2">
             <input
               type="text"
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
               placeholder="¿Qué deseas saber sobre tu restaurante hoy?"
-              className="flex-1 bg-white border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="flex-1 bg-white border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-300"
             />
             <button
               type="submit"
               disabled={!inputMessage.trim()}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg px-4 py-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              className="bg-white hover:bg-gray-50 text-gray-800 font-medium rounded-lg border border-gray-300 px-4 py-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
               </svg>
             </button>
           </form>
-          <div className="max-w-3xl mx-auto mt-2 text-xs text-center text-gray-500">
-            FudiGPT puede cometer errores. Verifica la información importante.
-          </div>
         </div>
       </div>
     </div>

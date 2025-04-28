@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import PosterService from '../services/poster/posterService';
+import { initiateOAuthFlow, handleAuthCallback, getTokens } from '../services/poster/posterAuth';
+import { syncAllData } from '../services/poster/posterSync';
 import { Restaurant } from '../models/Restaurant';
 import { db } from '../firebase';
 import { doc, setDoc } from 'firebase/firestore';
@@ -23,8 +24,7 @@ const OnboardingPage = () => {
     phone: '',
     email: '',
     password: '',
-    confirmPassword: '',
-    role: ''
+    confirmPassword: ''
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -83,7 +83,6 @@ const OnboardingPage = () => {
         phone: restaurantInfo.phone,
         email: restaurantInfo.email,
         userId: userCredential.user.uid,
-        role: restaurantInfo.role || 'Propietario'
       });
       
       await setDoc(doc(db, 'restaurants', userCredential.user.uid), restaurant.toFirestore());
@@ -170,22 +169,18 @@ const OnboardingPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-lg">
-        {/* Logo */}
+      <div className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-xl">
+        {/* Imagen de Fudi */}
         <div className="bg-white p-6 flex justify-center">
           <img 
             src="/images/fudigpt-logo.png" 
             alt="Fudi Bot" 
-            className="w-32 h-32 object-contain"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"%3E%3Crect width="128" height="128" fill="%23152238"%3E%3C/rect%3E%3Crect x="32" y="32" width="64" height="40" fill="%2350E6FF" rx="5"%3E%3C/rect%3E%3Crect x="40" y="80" width="48" height="24" fill="%2350E6FF" rx="3"%3E%3C/rect%3E%3Crect x="45" y="42" width="10" height="10" fill="%23152238"%3E%3C/rect%3E%3Crect x="73" y="42" width="10" height="10" fill="%23152238"%3E%3C/rect%3E%3Cpath d="M 45 65 Q 64 75, 83 65" stroke="%23152238" stroke-width="3" fill="none"%3E%3C/path%3E%3Ctext x="64" y="93" font-size="12" text-anchor="middle" font-family="sans-serif" fill="%23FF3E89"%3Efudi%3C/text%3E%3C/svg%3E';
-            }}
+            className="w-48 h-48"
           />
         </div>
         
         {/* Título */}
-        <div className="text-center pt-2 pb-4">
+        <div className="text-center pt-6 pb-2">
           <h2 className="text-xl font-bold text-gray-800">[join_FudiGPT™]</h2>
           <p className="text-sm text-gray-500 mt-1">Una visión inteligente de tu restaurante</p>
         </div>
@@ -193,13 +188,13 @@ const OnboardingPage = () => {
         {/* Formulario o contenido según paso actual */}
         <div className="px-8 py-6">
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
               {error}
             </div>
           )}
           
           {successMessage && currentStep === 2 && (
-            <div className="bg-green-50 border border-green-100 text-green-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-sm">
               {successMessage}
             </div>
           )}
@@ -217,7 +212,7 @@ const OnboardingPage = () => {
                     type="email"
                     id="email"
                     name="email"
-                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                     placeholder="Email"
                     value={restaurantInfo.email}
                     onChange={handleInputChange}
@@ -237,7 +232,7 @@ const OnboardingPage = () => {
                     type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
-                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                     placeholder="Password"
                     value={restaurantInfo.password}
                     onChange={handleInputChange}
@@ -275,8 +270,8 @@ const OnboardingPage = () => {
                     type={showPassword ? "text" : "password"}
                     id="confirmPassword"
                     name="confirmPassword"
-                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Confirmar Password"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                    placeholder="Confirm Password"
                     value={restaurantInfo.confirmPassword}
                     onChange={handleInputChange}
                     required
@@ -295,8 +290,8 @@ const OnboardingPage = () => {
                     type="text"
                     id="name"
                     name="name"
-                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Nombre del Restaurante"
+                    className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+                    placeholder="Restaurant Name"
                     value={restaurantInfo.name}
                     onChange={handleInputChange}
                     required
@@ -307,17 +302,14 @@ const OnboardingPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                className="w-full bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border border-gray-300 transition-colors"
               >
-                {isLoading ? 'Registrando...' : 'Registrarse'}
+                {isLoading ? 'Registrando...' : 'SIGN UP'}
               </button>
               
               <div className="mt-4">
                 <select
-                  name="role"
-                  value={restaurantInfo.role}
-                  onChange={handleInputChange}
-                  className="w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-500"
+                  className="w-full pl-3 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 text-gray-500"
                 >
                   <option value="">¿Qué rol tienes dentro de la organización?</option>
                   <option value="owner">Dueño</option>
@@ -341,7 +333,7 @@ const OnboardingPage = () => {
               <button
                 onClick={handleConnectPoster}
                 disabled={isLoading}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+                className="w-full bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border border-gray-300 transition-colors"
               >
                 {isLoading ? 'Conectando...' : 'Conectar con Poster'}
               </button>
@@ -354,9 +346,9 @@ const OnboardingPage = () => {
                 Estamos sincronizando tus datos desde Poster. Esto puede tomar unos momentos.
               </p>
               
-              <div className="w-full bg-gray-100 rounded-full h-2.5 mb-1">
+              <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1">
                 <div 
-                  className="bg-blue-500 h-2.5 rounded-full transition-all duration-300"
+                  className="bg-blue-500 h-2.5 rounded-full"
                   style={{ width: `${syncStatus.progress}%` }}
                 ></div>
               </div>
@@ -366,7 +358,7 @@ const OnboardingPage = () => {
           
           {currentStep === 4 && (
             <div>
-              <div className="bg-green-50 border border-green-100 text-green-700 px-4 py-3 rounded-lg mb-4">
+              <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                 <p className="font-bold">Integración exitosa</p>
                 <p>Tu restaurante ha sido registrado y conectado con Poster.</p>
               </div>
@@ -377,26 +369,22 @@ const OnboardingPage = () => {
               
               <button
                 onClick={handleFinishOnboarding}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                className="w-full bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border border-gray-300 transition-colors"
               >
-                Hablar con Fudi
+                Talk to Fudi
               </button>
             </div>
           )}
           
           {currentStep === 1 && (
             <div className="mt-4 text-center text-sm">
-              <span className="text-gray-600">¿Ya tienes una cuenta? </span>
-              <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
-                Iniciar Sesión
+              <span className="text-gray-600">Already have an account? </span>
+              <Link to="/login" className="text-blue-600 hover:text-blue-800 font-medium">
+                Login
               </Link>
             </div>
           )}
         </div>
-      </div>
-      
-      <div className="mt-6 text-center text-xs text-gray-500">
-        <p>FudiGPT © 2025 • Tu asistente AI para restaurantes</p>
       </div>
     </div>
   );

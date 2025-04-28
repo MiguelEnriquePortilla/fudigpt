@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import PosterService from '../services/poster/posterService';
+import { checkConnection, getTokens } from '../services/poster/posterAuth';
+import { syncAllData } from '../services/poster/posterSync';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const LoginPage = () => {
         showProgress: false
       });
       
-      const connectionStatus = await PosterService.auth.checkConnection(userId);
+      const connectionStatus = await checkConnection(userId);
       
       if (connectionStatus.connected) {
         // Si está conectado, intentar sincronizar datos
@@ -72,7 +73,7 @@ const LoginPage = () => {
         });
         
         // Obtener tokens
-        const tokens = await PosterService.auth.getTokens(userId);
+        const tokens = await getTokens(userId);
         
         // Simulación de progreso mientras se sincronizan los datos
         const interval = setInterval(() => {
@@ -89,7 +90,7 @@ const LoginPage = () => {
         }, 300);
         
         // Sincronizar datos
-        const syncResult = await PosterService.sync.all(userId);
+        const syncResult = await syncAllData(userId, tokens.accessToken);
         
         clearInterval(interval);
         
@@ -140,37 +141,32 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl overflow-hidden shadow-lg">
-        {/* Logo */}
+      <div className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-xl">
+        {/* Imagen de Fudi */}
         <div className="bg-white p-6 flex justify-center">
           <img 
             src="/images/fudigpt-logo.png" 
             alt="Fudi Bot" 
-            className="w-32 h-32 object-contain"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128"%3E%3Crect width="128" height="128" fill="%23152238"%3E%3C/rect%3E%3Crect x="32" y="32" width="64" height="40" fill="%2350E6FF" rx="5"%3E%3C/rect%3E%3Crect x="40" y="80" width="48" height="24" fill="%2350E6FF" rx="3"%3E%3C/rect%3E%3Crect x="45" y="42" width="10" height="10" fill="%23152238"%3E%3C/rect%3E%3Crect x="73" y="42" width="10" height="10" fill="%23152238"%3E%3C/rect%3E%3Cpath d="M 45 65 Q 64 75, 83 65" stroke="%23152238" stroke-width="3" fill="none"%3E%3C/path%3E%3Ctext x="64" y="93" font-size="12" text-anchor="middle" font-family="sans-serif" fill="%23FF3E89"%3Efudi%3C/text%3E%3C/svg%3E';
-            }}
+            className="w-48 h-48"
           />
         </div>
         
         {/* Título */}
-        <div className="text-center pt-2 pb-4">
+        <div className="text-center pt-6 pb-2">
           <h2 className="text-xl font-bold text-gray-800">["HOLA FUDI"]</h2>
-          <p className="text-sm text-gray-500 mt-1">Tu asistente de gestión para restaurantes</p>
         </div>
         
         {/* Estado de sincronización */}
         {syncStatus.inProgress && (
           <div className="px-8">
-            <div className="bg-blue-50 border border-blue-100 text-blue-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-3 rounded mb-4 text-sm">
               <p>{syncStatus.message}</p>
               
               {syncStatus.showProgress && (
                 <div className="mt-2">
-                  <div className="w-full bg-gray-100 rounded-full h-1.5 mb-1">
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1">
                     <div 
-                      className="bg-blue-500 h-1.5 rounded-full transition-all duration-300"
+                      className="bg-blue-500 h-2.5 rounded-full transition-all duration-300"
                       style={{ width: `${syncStatus.progress || 0}%` }}
                     ></div>
                   </div>
@@ -184,7 +180,7 @@ const LoginPage = () => {
         {/* Formulario */}
         <div className="px-8 py-6">
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
               {error}
             </div>
           )}
@@ -200,7 +196,7 @@ const LoginPage = () => {
                 <input
                   type="email"
                   id="email"
-                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -219,7 +215,7 @@ const LoginPage = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
-                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -249,29 +245,25 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isLoading || syncStatus.inProgress}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 px-4 rounded-lg transition-colors disabled:opacity-50"
+              className="w-full bg-white hover:bg-gray-50 text-gray-800 font-medium py-3 px-4 rounded-lg border border-gray-300 transition-colors disabled:opacity-50"
             >
-              {isLoading || syncStatus.inProgress ? 'Procesando...' : 'Iniciar Sesión'}
+              {isLoading || syncStatus.inProgress ? 'Procesando...' : 'Login'}
             </button>
           </form>
           
           <div className="mt-4 text-center text-sm">
-            <a href="#" className="text-blue-600 hover:text-blue-800 transition-colors">
-              ¿Olvidaste tu contraseña?
+            <a href="#" className="text-gray-600 hover:text-gray-800">
+              Forgot Password?
             </a>
           </div>
           
           <div className="mt-2 text-center text-sm">
-            <span className="text-gray-600">¿Aún no tienes cuenta? </span>
-            <Link to="/register" className="text-blue-600 hover:text-blue-800 font-medium transition-colors">
-              Regístrate
+            <span className="text-gray-600">Not registered yet? </span>
+            <Link to="/register" className="text-blue-600 hover:text-blue-800 font-medium">
+              Sign Up
             </Link>
           </div>
         </div>
-      </div>
-      
-      <div className="mt-6 text-center text-xs text-gray-500">
-        <p>FudiGPT © 2025 • Tu asistente AI para restaurantes</p>
       </div>
     </div>
   );

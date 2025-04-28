@@ -1,7 +1,7 @@
 // Contexto para manejar la conexión y estado de Poster
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
-import { checkPosterConnection, syncPosterData, initiatePosterAuth } from '../services/poster/posterService';
+import PosterService from '../services/poster/posterService';
 
 // Crear contexto
 const PosterContext = createContext();
@@ -38,7 +38,7 @@ export function PosterProvider({ children }) {
     const checkConnection = async () => {
       try {
         setPosterStatus(prev => ({ ...prev, loading: true }));
-        const status = await checkPosterConnection(currentUser.uid);
+        const status = await PosterService.auth.checkConnection(currentUser.uid);
         
         setPosterStatus({
           connected: status.connected,
@@ -70,11 +70,11 @@ export function PosterProvider({ children }) {
       return;
     }
     
-    initiatePosterAuth();
+    PosterService.auth.initiate();
   };
   
   // Función para sincronizar datos de Poster
-  const synchronizePosterData = async () => {
+  const synchronizePosterData = async (options = {}) => {
     if (!currentUser || !posterStatus.connected) {
       return {
         success: false,
@@ -85,7 +85,13 @@ export function PosterProvider({ children }) {
     try {
       setPosterStatus(prev => ({ ...prev, syncInProgress: true }));
       
-      const result = await syncPosterData(currentUser.uid);
+      // Si hay opciones específicas, usar sincronización selectiva
+      let result;
+      if (Object.keys(options).length > 0) {
+        result = await PosterService.sync.selective(currentUser.uid, options);
+      } else {
+        result = await PosterService.sync.all(currentUser.uid);
+      }
       
       // Actualizar estado con la información de la sincronización
       setPosterStatus(prev => ({
@@ -114,11 +120,35 @@ export function PosterProvider({ children }) {
     }
   };
   
+  // Funciones para sincronización selectiva
+  const synchronizeProducts = () => {
+    return synchronizePosterData({ products: true, inventory: false, sales: false });
+  };
+  
+  const synchronizeInventory = () => {
+    return synchronizePosterData({ products: false, inventory: true, sales: false });
+  };
+  
+  const synchronizeSales = () => {
+    return synchronizePosterData({ products: false, inventory: false, sales: true });
+  };
+  
+  // Función para obtener datos
+  const getPosterData = {
+    products: () => PosterService.data.getProducts(currentUser?.uid),
+    inventory: () => PosterService.data.getInventory(currentUser?.uid),
+    sales: (filters) => PosterService.data.getSales(currentUser?.uid, filters)
+  };
+  
   // Valor del contexto
   const value = {
     ...posterStatus,
     connectToPoster,
-    synchronizePosterData
+    synchronizePosterData,
+    synchronizeProducts,
+    synchronizeInventory,
+    synchronizeSales,
+    getPosterData
   };
   
   return (
@@ -126,4 +156,4 @@ export function PosterProvider({ children }) {
       {children}
     </PosterContext.Provider>
   );
-}// Contexto para manejar la conexión y estado de Poster 
+}

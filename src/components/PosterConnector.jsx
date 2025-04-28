@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
-import * as posterService from '../services/poster/posterService';
+import PosterService from '../services/poster/posterService';
 
 // Componente de botón de conexión con Poster
 const PosterConnector = () => {
   const { user } = useAuth();
   const { isDark } = useTheme();
-  
+
   const [connected, setConnected] = useState(false);
   const [lastSync, setLastSync] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,11 +18,11 @@ const PosterConnector = () => {
   // Verificar estado de conexión al cargar
   useEffect(() => {
     if (!user) return;
-    
+
     async function checkConnection() {
       try {
         setLoading(true);
-        const status = await posterService.checkConnection(user.uid);
+        const status = await PosterService.auth.checkConnection(user.uid);
         setConnected(status.connected);
         setLastSync(status.lastSync);
         setSyncInProgress(status.syncInProgress || false);
@@ -32,13 +32,13 @@ const PosterConnector = () => {
         setLoading(false);
       }
     }
-    
+
     checkConnection();
   }, [user]);
 
   // Iniciar flujo de autenticación con Poster
   const connectToPoster = () => {
-    posterService.initiateAuth();
+    PosterService.auth.initiate();
   };
 
   // Formatear fecha última sincronización
@@ -80,14 +80,14 @@ const PosterConnector = () => {
     setSyncInProgress(true);
 
     try {
-      const result = await posterService.syncData(user.uid);
+      const result = await PosterService.sync.all(user.uid);
 
       if (result.success) {
         setSyncMessage({
           type: 'success',
           text: `Sincronización completada. Se importaron ${result.counts.products} productos, ${result.counts.inventory} inventarios y ${result.counts.sales} ventas.`
         });
-        
+
         // Actualizar estado local
         setLastSync(new Date());
 
