@@ -1,6 +1,6 @@
 # FudiGPT - Documentación Principal
 
-*Última actualización: 2025-04-27*
+*Última actualización: 2025-04-28*
 
 Este documento proporciona un resumen actualizado del estado del proyecto FudiGPT.
 
